@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 18384dddcad28ff4290508ba0ec4ffe7
+guid: f1a5fdb20ca4fa9469c8cbf3a361c039
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: green_chest_0
+      name: BulletKin_Run_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 44
-        width: 25
-        height: 22
+        y: 24
+        width: 16
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,20 +111,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c36e3a014db0f864a82092917ade1ceb
-      internalID: 144859501
+      spriteID: 0e29f16b79e234945b3f538461741421
+      internalID: -375629648
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_1
+      name: BulletKin_Run_1
       rect:
         serializedVersion: 2
-        x: 25
-        y: 44
-        width: 25
-        height: 22
+        x: 16
+        y: 24
+        width: 16
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -132,20 +132,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: be1b6205ac1c56a46a3a2cb6102d189c
-      internalID: -1302720486
+      spriteID: d8adf00d19bc56d459b7b1d6c2c16e92
+      internalID: 2020934981
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_2
+      name: BulletKin_Run_2
       rect:
         serializedVersion: 2
-        x: 50
-        y: 44
-        width: 25
-        height: 22
+        x: 32
+        y: 24
+        width: 16
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,20 +153,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4bba1263bbb837244901fca293e93f56
-      internalID: 384406498
+      spriteID: 857bf6c5c66fa984fbf0287b0295ac19
+      internalID: -363512353
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_3
+      name: BulletKin_Run_3
       rect:
         serializedVersion: 2
-        x: 0
-        y: 22
-        width: 25
-        height: 22
+        x: 48
+        y: 24
+        width: 16
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,20 +174,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bc61b0a782d8e0946874821195513980
-      internalID: -1946468288
+      spriteID: b474fb7e6f48db74d8296fa35b4dfad7
+      internalID: 683606269
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_4
+      name: BulletKin_Run_4
       rect:
         serializedVersion: 2
-        x: 25
-        y: 22
-        width: 25
-        height: 22
+        x: 64
+        y: 24
+        width: 16
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,20 +195,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e7637022d57cf7b4d81b4c9e1d863d91
-      internalID: 624068507
+      spriteID: 7b4b2b23c03659142a64ae14f366997d
+      internalID: -1888968614
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_5
+      name: BulletKin_Run_5
       rect:
         serializedVersion: 2
-        x: 50
-        y: 22
-        width: 25
-        height: 22
+        x: 80
+        y: 24
+        width: 16
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -216,20 +216,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ccd22769643310947aceb1aad15ebfb4
-      internalID: 1947408620
+      spriteID: 995035ebd54d8ea49b8ec90af338dbaa
+      internalID: -1301186510
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_6
+      name: BulletKin_Run_6
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 25
-        height: 22
+        width: 16
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -237,20 +237,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 128a5dad5dbb859469599b2884ebcec8
-      internalID: 989534462
+      spriteID: c63f9a1936945f24bba80bf9e3a3218d
+      internalID: -774308938
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_7
+      name: BulletKin_Run_7
       rect:
         serializedVersion: 2
-        x: 25
+        x: 16
         y: 0
-        width: 25
-        height: 22
+        width: 16
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -258,20 +258,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 933fd835bf5296041b3bc8b0abe3c05c
-      internalID: -1385942671
+      spriteID: e135abd0170ccc9468b7bfe42d797e14
+      internalID: 112701051
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_8
+      name: BulletKin_Run_8
       rect:
         serializedVersion: 2
-        x: 50
+        x: 32
         y: 0
-        width: 25
-        height: 22
+        width: 16
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -279,8 +279,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c731d6f45bf999f4f8ca9c2a31aa7566
-      internalID: 1609883569
+      spriteID: ac173e911b4d54a4bae3958683c16aef
+      internalID: -112541580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BulletKin_Run_9
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 16
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c2fda439616af045aca49dd1e9e8aa4
+      internalID: -1457602457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BulletKin_Run_10
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 16
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1102b95b39e9ec04fa00c84a0141e21e
+      internalID: 626774933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BulletKin_Run_11
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 0
+        width: 16
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de2d59a5f0dc8e94b8728a1b6e794428
+      internalID: 464525543
       vertices: []
       indices: 
       edges: []
@@ -296,15 +359,18 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      green_chest_0: 144859501
-      green_chest_1: -1302720486
-      green_chest_2: 384406498
-      green_chest_3: -1946468288
-      green_chest_4: 624068507
-      green_chest_5: 1947408620
-      green_chest_6: 989534462
-      green_chest_7: -1385942671
-      green_chest_8: 1609883569
+      BulletKin_Run_0: -375629648
+      BulletKin_Run_1: 2020934981
+      BulletKin_Run_10: 626774933
+      BulletKin_Run_11: 464525543
+      BulletKin_Run_2: -363512353
+      BulletKin_Run_3: 683606269
+      BulletKin_Run_4: -1888968614
+      BulletKin_Run_5: -1301186510
+      BulletKin_Run_6: -774308938
+      BulletKin_Run_7: 112701051
+      BulletKin_Run_8: -112541580
+      BulletKin_Run_9: -1457602457
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

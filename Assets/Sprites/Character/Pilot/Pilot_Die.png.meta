@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 18384dddcad28ff4290508ba0ec4ffe7
+guid: 73704e84a670092419f7589a93dd428b
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 128
+    maxTextureSize: 64
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 0
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: green_chest_0
+      name: Pilot_Die_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 44
-        width: 25
-        height: 22
+        y: 48
+        width: 17
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,20 +111,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c36e3a014db0f864a82092917ade1ceb
-      internalID: 144859501
+      spriteID: 3c4b032710862704fa1f9dffd9929e2b
+      internalID: 1577131152
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_1
+      name: Pilot_Die_1
       rect:
         serializedVersion: 2
-        x: 25
-        y: 44
-        width: 25
-        height: 22
+        x: 17
+        y: 48
+        width: 17
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -132,20 +132,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: be1b6205ac1c56a46a3a2cb6102d189c
-      internalID: -1302720486
+      spriteID: 62d82246948737b4aba410901fe0f5da
+      internalID: -2091705028
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_2
+      name: Pilot_Die_2
       rect:
         serializedVersion: 2
-        x: 50
-        y: 44
-        width: 25
-        height: 22
+        x: 34
+        y: 48
+        width: 17
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,20 +153,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4bba1263bbb837244901fca293e93f56
-      internalID: 384406498
+      spriteID: 23cb9888278bc4e42ab4fe9b391bd0e1
+      internalID: 1126725217
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_3
+      name: Pilot_Die_3
       rect:
         serializedVersion: 2
         x: 0
-        y: 22
-        width: 25
-        height: 22
+        y: 24
+        width: 17
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,20 +174,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bc61b0a782d8e0946874821195513980
-      internalID: -1946468288
+      spriteID: f00b55a999e61944e85ba973fee9664c
+      internalID: 37143811
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_4
+      name: Pilot_Die_4
       rect:
         serializedVersion: 2
-        x: 25
-        y: 22
-        width: 25
-        height: 22
+        x: 17
+        y: 24
+        width: 17
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,20 +195,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e7637022d57cf7b4d81b4c9e1d863d91
-      internalID: 624068507
+      spriteID: 04467a521faf90d47a41e88ad5896aab
+      internalID: -1965675185
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_5
+      name: Pilot_Die_5
       rect:
         serializedVersion: 2
-        x: 50
-        y: 22
-        width: 25
-        height: 22
+        x: 34
+        y: 24
+        width: 17
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -216,20 +216,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ccd22769643310947aceb1aad15ebfb4
-      internalID: 1947408620
+      spriteID: ad008eb44093ac744a317f459c731518
+      internalID: 1059524027
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_6
+      name: Pilot_Die_6
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 25
-        height: 22
+        width: 17
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -237,20 +237,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 128a5dad5dbb859469599b2884ebcec8
-      internalID: 989534462
+      spriteID: 798fcf417edf45b4ca1d82ed3569da17
+      internalID: 469748835
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_7
+      name: Pilot_Die_7
       rect:
         serializedVersion: 2
-        x: 25
+        x: 17
         y: 0
-        width: 25
-        height: 22
+        width: 17
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -258,20 +258,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 933fd835bf5296041b3bc8b0abe3c05c
-      internalID: -1385942671
+      spriteID: 39273c4a916a0cd4b911ea8757456a86
+      internalID: 1888740316
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: green_chest_8
+      name: Pilot_Die_8
       rect:
         serializedVersion: 2
-        x: 50
+        x: 34
         y: 0
-        width: 25
-        height: 22
+        width: 17
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -279,8 +279,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c731d6f45bf999f4f8ca9c2a31aa7566
-      internalID: 1609883569
+      spriteID: 064ad62ddc89eb347be2c4984de069a0
+      internalID: 1242328242
       vertices: []
       indices: 
       edges: []
@@ -296,15 +296,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      green_chest_0: 144859501
-      green_chest_1: -1302720486
-      green_chest_2: 384406498
-      green_chest_3: -1946468288
-      green_chest_4: 624068507
-      green_chest_5: 1947408620
-      green_chest_6: 989534462
-      green_chest_7: -1385942671
-      green_chest_8: 1609883569
+      Pilot_Die_0: 1577131152
+      Pilot_Die_1: -2091705028
+      Pilot_Die_2: 1126725217
+      Pilot_Die_3: 37143811
+      Pilot_Die_4: -1965675185
+      Pilot_Die_5: 1059524027
+      Pilot_Die_6: 469748835
+      Pilot_Die_7: 1888740316
+      Pilot_Die_8: 1242328242
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
