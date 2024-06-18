@@ -5,6 +5,7 @@ public class InputSystem : MonoBehaviour
 {
     [Header("Keyboard Input Values")]
     public Vector2 move;
+    public bool dodge;
     public bool dash;
     public bool fire;
     public bool reload;
@@ -18,6 +19,11 @@ public class InputSystem : MonoBehaviour
     public void OnMove(InputValue value)
     {
         MoveInput(value.Get<Vector2>());
+    }
+
+    public void OnDodge(InputValue value)
+    {
+        DodgeInput(value.isPressed);
     }
 
     public void OnDash(InputValue value)
@@ -53,6 +59,11 @@ public class InputSystem : MonoBehaviour
     public void DashInput(bool newSprintState)
     {
         dash = newSprintState;
+    }
+
+    public void DodgeInput(bool newSprintState)
+    {
+        dodge = newSprintState;
     }
 
     public void FireInput(bool newSprintState)

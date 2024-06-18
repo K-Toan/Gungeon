@@ -15,12 +15,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool canMove = true;
 
     [Header("Dash/Dodge")]
-    public float DashSpeed = 3f;
-    public float DashTime = 0.75f;
-    public float DashCooldownTime = 0.25f;
-    [SerializeField] private Vector2 dashDirection;
-    [SerializeField] private bool isDashing = false;
-    [SerializeField] private bool canDash = true;
+    public float DodgeSpeed = 3f;
+    public float DodgeTime = 0.75f;
+    public float DodgeCooldownTime = 0.25f;
+    [SerializeField] private Vector2 DodgeDirection;
+    [SerializeField] private bool isDodging = false;
+    [SerializeField] private bool canDodge = true;
 
     [Header("Rotation")]
     [SerializeField] private Vector2 lookDirection;
@@ -30,12 +30,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool _hasGun;
     public GameObject Gun;
     public GameObject GunRoot;
-    // public GameObject OneHand;
-    // public GameObject TwoHands;
-    // public GameObject Visual;
-    public GameObject ParticleRoot;
-    private GameObject hand;
-
+    
     [Header("Components")]
     [SerializeField] private bool _hasAnimator;
     [SerializeField] private Animator _animator;
@@ -49,18 +44,17 @@ public class PlayerController : MonoBehaviour
 
     [Header("Animation Hash IDs")]
     private int _speedHash;
+    private int _lookXHash;
+    private int _lookYHash;
     private int _speedXHash;
     private int _speedYHash;
-    private int _dashHash;
+    private int _DodgeHash;
     private int _dieHash;
 
     private void Start()
     {
         // game objects
         _mainCamera = Camera.main;
-        // Visual = transform.Find("Visual").gameObject;
-        // OneHand = transform.Find("OneHand").gameObject;
-        // TwoHands = transform.Find("TwoHands").gameObject;
 
         // components
         _hasAnimator = TryGetComponent<Animator>(out _animator);
@@ -71,56 +65,25 @@ public class PlayerController : MonoBehaviour
         _input = GetComponent<InputSystem>();
         _rigidbody = GetComponent<Rigidbody2D>();
 
-        AssignGun();
         AssignAnimationHashes();
     }
 
     private void AssignAnimationHashes()
     {
         _speedHash = Animator.StringToHash("Speed");
+        _lookXHash = Animator.StringToHash("LookX");
+        _lookYHash = Animator.StringToHash("LookY");
         _speedXHash = Animator.StringToHash("SpeedX");
         _speedYHash = Animator.StringToHash("SpeedY");
-        _dashHash = Animator.StringToHash("Dash");
+        _DodgeHash = Animator.StringToHash("Dodge");
         _dieHash = Animator.StringToHash("Die");
-    }
-
-    private void AssignGun()
-    {
-        Gun = _weaponSystem.GetWeapon();
-        if (Gun != null)
-        {
-            _hasGun = true;
-            if (Gun.GetComponent<GunController>().IsOneHand())
-            {
-                // OneHand.SetActive(true);
-                // TwoHands.SetActive(false);
-                // hand = OneHand;
-                _animator.SetLayerWeight(1, 1f);
-            }
-            else if (Gun.GetComponent<GunController>().IsTwoHands())
-            {
-                // OneHand.SetActive(false);
-                // TwoHands.SetActive(true);
-                // hand = TwoHands;
-                _animator.SetLayerWeight(1, 1f);
-            }
-            hand.transform.SetParent(transform);
-            hand.SetActive(true);
-            GunRoot = hand.transform.Find("GunRoot").gameObject;
-            Gun.transform.SetParent(GunRoot.transform);
-            Gun.transform.localPosition = Vector3.zero;
-        }
-        else
-        {
-            _hasGun = false;
-        }
     }
 
     private void Update()
     {
         // handle logic parts
         HandleRotation();
-        HandleDash();
+        HandleDodge();
         HandleGun();
         Move();
 
@@ -141,27 +104,27 @@ public class PlayerController : MonoBehaviour
         if (_hasGun)
         {
             gunDirection = (mousePos - Gun.transform.position).normalized;
-            hand.transform.up = gunDirection;
+            Gun.transform.up = gunDirection;
         }
     }
 
-    private void HandleDash()
+    private void HandleDodge()
     {
-        if (!canDash)
+        if (!canDodge)
             return;
 
-        if (_input.dash && _input.move != Vector2.zero)
+        if (_input.dodge && _input.move != Vector2.zero)
         {
-            // recalculate dash direction
-            dashDirection = _input.move.normalized;
+            // recalculate Dodge direction
+            DodgeDirection = _input.move.normalized;
 
-            StartCoroutine(DisableMovementRoutine(DashTime));
-            StartCoroutine(DashRoutine(dashDirection));
+            StartCoroutine(DisableMovementRoutine(DodgeTime));
+            StartCoroutine(DodgeRoutine(DodgeDirection));
 
             // animations
             if (_hasAnimator)
             {
-                _animator.SetTrigger(_dashHash);
+                _animator.SetTrigger(_DodgeHash);
             }
         }
     }
@@ -204,8 +167,10 @@ public class PlayerController : MonoBehaviour
         if (_hasAnimator)
         {
             _animator.SetFloat(_speedHash, currentSpeed);
-            _animator.SetFloat(_speedXHash, lookDirection.x);
-            _animator.SetFloat(_speedYHash, lookDirection.y);
+            _animator.SetFloat(_lookXHash, lookDirection.x);
+            _animator.SetFloat(_lookYHash, lookDirection.y);
+            _animator.SetFloat(_speedXHash, _rigidbody.velocity.x);
+            _animator.SetFloat(_speedYHash, _rigidbody.velocity.y);
         }
     }
 
@@ -232,25 +197,25 @@ public class PlayerController : MonoBehaviour
         canMove = true;
     }
 
-    IEnumerator DashRoutine(Vector2 dashDir)
+    IEnumerator DodgeRoutine(Vector2 DodgeDir)
     {
         // start ghost effect
-        // _ghostEffect.Play(DashTime);
+        // _ghostEffect.Play(DodgeTime);
 
-        // start dash
-        canDash = false;
-        isDashing = true;
-        _rigidbody.velocity = dashDir.normalized * DashSpeed;
+        // start Dodge
+        canDodge = false;
+        isDodging = true;
+        _rigidbody.velocity = DodgeDir.normalized * DodgeSpeed;
 
-        yield return new WaitForSeconds(DashTime);
+        yield return new WaitForSeconds(DodgeTime);
 
-        // end dash
-        isDashing = false;
+        // end Dodge
+        isDodging = false;
         _rigidbody.velocity = Vector2.zero;
 
-        // dash cooldown
-        yield return new WaitForSeconds(DashCooldownTime);
-        canDash = true;
+        // Dodge cooldown
+        yield return new WaitForSeconds(DodgeCooldownTime);
+        canDodge = true;
     }
 
     public void TakeDamage(float damage)
@@ -272,7 +237,7 @@ public class PlayerController : MonoBehaviour
         // _rigidbody.velocity = Vector2.zero;
         // _animator.SetTrigger(_dieHash);
         // canMove = false;
-        // canDash = false;
+        // canDodge = false;
         // hand.SetActive(false);
         // _animator.SetLayerWeight(1, 0f);
         // _animator.SetLayerWeight(0, 1f);
