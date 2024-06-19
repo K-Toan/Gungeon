@@ -1,11 +1,8 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Damageable
 {
-    [Header("Stats")]
-    public float HP = 2f;
-
     [Header("Move")]
     public float MoveSpeed = 3f;
     public float Acceleration = 20f;
@@ -216,30 +213,5 @@ public class PlayerController : MonoBehaviour
         // Dodge cooldown
         yield return new WaitForSeconds(DodgeCooldownTime);
         canDodge = true;
-    }
-
-    public void TakeDamage(float damage)
-    {
-        HP -= damage;
-        Debug.Log("HP: " + HP);
-        if (HP > 0)
-        {
-            _flashEffect.Flash();
-        }
-        else
-        {
-            Die();
-        }
-    }
-
-    public void Die()
-    {
-        // _rigidbody.velocity = Vector2.zero;
-        // _animator.SetTrigger(_dieHash);
-        // canMove = false;
-        // canDodge = false;
-        // hand.SetActive(false);
-        // _animator.SetLayerWeight(1, 0f);
-        // _animator.SetLayerWeight(0, 1f);
     }
 }
