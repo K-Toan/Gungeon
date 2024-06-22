@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : Damageable
@@ -27,17 +28,21 @@ public class PlayerController : Damageable
     [SerializeField] private bool _hasGun;
     public GameObject Gun;
     public GameObject GunRoot;
-    
+    public GameObject Hand;
+
     [Header("Components")]
     [SerializeField] private bool _hasAnimator;
     [SerializeField] private Animator _animator;
     [SerializeField] private SpriteRenderer _spriteRenderer;
-    [SerializeField] private GhostEffect _ghostEffect;
-    [SerializeField] private FlashEffect _flashEffect;
-    [SerializeField] private WeaponSystem _weaponSystem;
     [SerializeField] private InputSystem _input;
     [SerializeField] private Rigidbody2D _rigidbody;
     private Camera _mainCamera;
+
+    [Header("Scripts")]
+    [SerializeField] private GhostEffect _ghostEffect;
+    [SerializeField] private FlashEffect _flashEffect;
+    [SerializeField] private GunController _gunController;
+    [SerializeField] private WeaponSystem _weaponSystem;
 
     [Header("Animation Hash IDs")]
     private int _speedHash;
@@ -52,6 +57,7 @@ public class PlayerController : Damageable
     {
         // game objects
         _mainCamera = Camera.main;
+        Hand = transform.Find("Hand").gameObject;
 
         // components
         _hasAnimator = TryGetComponent<Animator>(out _animator);
@@ -62,7 +68,18 @@ public class PlayerController : Damageable
         _input = GetComponent<InputSystem>();
         _rigidbody = GetComponent<Rigidbody2D>();
 
+        AssignGun();
         AssignAnimationHashes();
+    }
+
+    private void AssignGun()
+    {
+        _hasGun = Gun = GunRoot.transform.GetChild(0).gameObject;
+        if(_hasGun)
+        {
+            _gunController = Gun.GetComponent<GunController>();
+            Hand.transform.SetParent(_gunController.HandGrip.transform);
+        }
     }
 
     private void AssignAnimationHashes()
@@ -94,14 +111,25 @@ public class PlayerController : Damageable
         // mouse position
         Vector3 mousePos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
 
-        // character rotation
+        // rotation
         lookDirection = (mousePos - transform.position).normalized;
+        gunDirection = (mousePos - Gun.transform.position).normalized;
+    }
+
+    private void HandleGun()
+    {
+        if (!_hasGun)
+            return;
 
         // gun rotation
-        if (_hasGun)
+        GunRoot.transform.up = gunDirection;
+
+        // if(Input.GetKeyDown(KeyCode.Mouse0))
+        _gunController.SetFiring(_input.fire);
+        // if (_input.reload)
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            gunDirection = (mousePos - Gun.transform.position).normalized;
-            Gun.transform.up = gunDirection;
+            _gunController.Reload();
         }
     }
 
@@ -123,20 +151,6 @@ public class PlayerController : Damageable
             {
                 _animator.SetTrigger(_DodgeHash);
             }
-        }
-    }
-
-    private void HandleGun()
-    {
-        if (!_hasGun)
-            return;
-
-        // if(Input.GetKeyDown(KeyCode.Mouse0))
-        Gun.GetComponent<GunController>().SetFiring(_input.fire);
-        // if (_input.reload)
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Gun.GetComponent<GunController>().Reload();
         }
     }
 

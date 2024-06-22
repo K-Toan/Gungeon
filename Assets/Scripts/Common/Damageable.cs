@@ -21,7 +21,7 @@ public class Damageable : MonoBehaviour, IDamageable
         {
             // if(_hasAnimator)
             //     _animator.SetTrigger("Die");
-            // Die();
+            Die();
         }
     }
 

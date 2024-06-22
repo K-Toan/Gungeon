@@ -27,15 +27,15 @@ public class GunController : MonoBehaviour
     [SerializeField] private BulletType bulletType = BulletType.Projectile;
 
     [Header("Game Objects")]
-    public GameObject Visual;
     public GameObject Bullet;
     public GameObject Muzzle;
+    public GameObject HandGrip;
+    [SerializeField] private Transform ShootPosition;
 
     [Header("Components")]
     [SerializeField] private bool _hasAnimator;
     [SerializeField] private Animator _animator;
     [SerializeField] private SpriteRenderer _spriteRenderer;
-    [SerializeField] private Transform ShootPosition;
     [SerializeField] private AudioClip shotSound;
     [SerializeField] private AudioClip reloadSound;
     private AudioSource audioSource;
@@ -50,7 +50,10 @@ public class GunController : MonoBehaviour
 
     private void Start()
     {
-        _hasAnimator = Visual.TryGetComponent<Animator>(out _animator);
+        HandGrip = transform.Find("HandGrip").gameObject;
+        ShootPosition = transform.Find("ShootPosition");
+
+        _hasAnimator = TryGetComponent<Animator>(out _animator);
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.clip = shotSound;
         AssignAnimationHashes();
