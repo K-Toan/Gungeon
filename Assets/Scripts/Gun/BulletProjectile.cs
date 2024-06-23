@@ -2,21 +2,12 @@ using UnityEngine;
 
 public class BulletProjectile : MonoBehaviour
 {
-    [Header("Stats")]
-    public float Speed = 5f;
-    public float Damage = 1f;
-
-    [Header("Visuals")]
+    [Header("Components")]
     [SerializeField] private bool _hasAnimator;
     [SerializeField] private Animator _animator;
-    // [SerializeField] private SpriteRenderer _spriteRenderer;
-
-    [Header("Components")]
+    [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private Rigidbody2D _rigidbody;
     [SerializeField] private BoxCollider2D _hitbox;
-
-    [Header("Game Objects")]
-    public GameObject Visual;
 
     private int _hitHash;
 
@@ -24,9 +15,7 @@ public class BulletProjectile : MonoBehaviour
     {
         _hitbox = GetComponent<BoxCollider2D>();
         _rigidbody = GetComponent<Rigidbody2D>();
-        _rigidbody.velocity = transform.up * Speed;
-
-        _hasAnimator = Visual.TryGetComponent<Animator>(out _animator);
+        _hasAnimator = TryGetComponent<Animator>(out _animator);
 
         AssignAnimationHashes();
     }

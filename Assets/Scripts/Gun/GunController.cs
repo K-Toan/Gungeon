@@ -3,8 +3,10 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
-    [Header("Stats")]
-    public float Damage = 1f;
+    [Header("Bullet Stats")]
+    public float BulletDamage = 1f;
+    public float BulletSpeed = 5f;
+    [Header("Gun Stats")]
     [Space] // ammo
     public int CurrentMagazine = 0;
     public int MagazineCapacity = 30;
@@ -31,6 +33,7 @@ public class GunController : MonoBehaviour
     public GameObject Muzzle;
     public GameObject HandGrip;
     [SerializeField] private Transform ShootPosition;
+    [SerializeField] private Transform MuzzlePosition;
 
     [Header("Components")]
     [SerializeField] private bool _hasAnimator;
@@ -52,8 +55,11 @@ public class GunController : MonoBehaviour
     {
         HandGrip = transform.Find("HandGrip").gameObject;
         ShootPosition = transform.Find("ShootPosition");
+        MuzzlePosition = transform.Find("MuzzlePosition");
 
         _hasAnimator = TryGetComponent<Animator>(out _animator);
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.clip = shotSound;
         AssignAnimationHashes();
@@ -129,11 +135,11 @@ public class GunController : MonoBehaviour
         Vector2 shootDir = ShootPosition.up + new Vector3(0f, spread);
 
         GameObject bullet = Instantiate(Bullet, ShootPosition.position, ShootPosition.rotation);
-        GameObject muzzle = Instantiate(Muzzle, ShootPosition.position, ShootPosition.rotation);
+        GameObject muzzle = Instantiate(Muzzle, MuzzlePosition.position, MuzzlePosition.rotation);
 
         Destroy(muzzle, 0.5f);
 
-        // bullet.GetComponent<Rigidbody2D>().velocity = shootDir * 5f;
+        bullet.GetComponent<Rigidbody2D>().velocity = shootDir * BulletSpeed;
 
         // sfx
         if (audioSource != null && audioSource.clip != null)
