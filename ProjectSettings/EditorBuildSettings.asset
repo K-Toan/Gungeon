@@ -8,4 +8,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DungeonScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/SettingsScene.unity
+    guid: edb038ddc0e3ac745a10b8e3c3450ca7
+  - enabled: 1
+    path: Assets/Scenes/PauseScene(Temporary).unity
+    guid: 95d195712cd2b1e4385ff8afe941ddef
+  - enabled: 1
+    path: Assets/Scenes/MenuScene.unity
+    guid: 07c651ac4c1c55c4db55ac62472d8d20
   m_configObjects: {}
