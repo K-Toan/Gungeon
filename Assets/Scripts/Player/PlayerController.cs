@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : Damageable
@@ -12,20 +11,26 @@ public class PlayerController : Damageable
     [SerializeField] private float currentSpeed;
     [SerializeField] private bool canMove = true;
 
-    [Header("Dash/Dodge")]
+    [Header("Dodge")]
     public float DodgeSpeed = 3f;
     public float DodgeTime = 0.75f;
     public float DodgeCooldownTime = 0.25f;
-    [SerializeField] private Vector2 DodgeDirection;
     [SerializeField] private bool isDodging = false;
     [SerializeField] private bool canDodge = true;
+
+    [Header("Dash")]
+    public float DashSpeed = 15f;
+    public float DashTime = 0.25f;
+    public float DashCooldownTime = 0.25f;
+    [SerializeField] private bool isDashing = false;
+    [SerializeField] private bool canDash = true;
 
     [Header("Rotation")]
     [SerializeField] private Vector2 lookDirection;
     [SerializeField] private Vector2 gunDirection;
 
     [Header("Game Objects")]
-    [SerializeField] private bool _hasGun;
+    // [SerializeField] private bool _hasGun;
     public GameObject Gun;
     public GameObject GunRoot;
     public GameObject Hand;
@@ -36,13 +41,11 @@ public class PlayerController : Damageable
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private InputSystem _input;
     [SerializeField] private Rigidbody2D _rigidbody;
-    private Camera _mainCamera;
 
     [Header("Scripts")]
     [SerializeField] private GhostEffect _ghostEffect;
     [SerializeField] private FlashEffect _flashEffect;
     [SerializeField] private GunController _gunController;
-    [SerializeField] private WeaponSystem _weaponSystem;
 
     [Header("Animation Hash IDs")]
     private int _speedHash;
@@ -50,36 +53,25 @@ public class PlayerController : Damageable
     private int _lookYHash;
     private int _speedXHash;
     private int _speedYHash;
-    private int _DodgeHash;
+    private int _dodgeHash;
     private int _dieHash;
 
     private void Start()
     {
         // game objects
-        _mainCamera = Camera.main;
         Hand = transform.Find("Hand").gameObject;
+        GunRoot = transform.Find("GunRoot").gameObject;
 
         // components
         _hasAnimator = TryGetComponent<Animator>(out _animator);
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _ghostEffect = GetComponent<GhostEffect>();
         _flashEffect = GetComponent<FlashEffect>();
-        _weaponSystem = GetComponent<WeaponSystem>();
         _input = GetComponent<InputSystem>();
         _rigidbody = GetComponent<Rigidbody2D>();
 
-        AssignGun();
+        // AssignGun();
         AssignAnimationHashes();
-    }
-
-    private void AssignGun()
-    {
-        _hasGun = Gun = GunRoot.transform.GetChild(0).gameObject;
-        if(_hasGun)
-        {
-            _gunController = Gun.GetComponent<GunController>();
-            Hand.transform.SetParent(_gunController.HandGrip.transform);
-        }
     }
 
     private void AssignAnimationHashes()
@@ -89,7 +81,7 @@ public class PlayerController : Damageable
         _lookYHash = Animator.StringToHash("LookY");
         _speedXHash = Animator.StringToHash("SpeedX");
         _speedYHash = Animator.StringToHash("SpeedY");
-        _DodgeHash = Animator.StringToHash("Dodge");
+        _dodgeHash = Animator.StringToHash("Dodge");
         _dieHash = Animator.StringToHash("Die");
     }
 
@@ -98,7 +90,7 @@ public class PlayerController : Damageable
         // handle logic parts
         HandleRotation();
         HandleDodge();
-        HandleGun();
+        HandleDash();
         Move();
 
         // handle visuals
@@ -109,54 +101,51 @@ public class PlayerController : Damageable
     private void HandleRotation()
     {
         // mouse position
-        Vector3 mousePos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         // rotation
         lookDirection = (mousePos - transform.position).normalized;
-        gunDirection = (mousePos - Gun.transform.position).normalized;
-    }
-
-    private void HandleGun()
-    {
-        if (!_hasGun)
-            return;
-
-        // gun rotation
-        GunRoot.transform.up = gunDirection;
-
-        // if(Input.GetKeyDown(KeyCode.Mouse0))
-        _gunController.SetFiring(_input.fire);
-        // if (_input.reload)
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            _gunController.Reload();
-        }
     }
 
     private void HandleDodge()
     {
-        if (!canDodge)
+        if (!canDodge || isDodging || isDashing)
             return;
 
         if (_input.dodge && _input.move != Vector2.zero)
         {
             // recalculate Dodge direction
-            DodgeDirection = _input.move.normalized;
+            Vector2 dodgeDir = _input.move.normalized;
 
             StartCoroutine(DisableMovementRoutine(DodgeTime));
-            StartCoroutine(DodgeRoutine(DodgeDirection));
+            StartCoroutine(DodgeRoutine(dodgeDir));
 
             // animations
             if (_hasAnimator)
             {
-                _animator.SetTrigger(_DodgeHash);
+                _animator.SetTrigger(_dodgeHash);
             }
+        }
+    }
+
+    private void HandleDash()
+    {
+        if (!canDash || isDodging || isDashing)
+            return;
+
+        if (_input.dash && _input.move != Vector2.zero)
+        {
+            // recalculate Dodge direction
+            Vector2 dashDir = _input.move.normalized;
+
+            StartCoroutine(DisableMovementRoutine(DashTime));
+            StartCoroutine(DashRoutine(dashDir));
         }
     }
 
     private void Move()
     {
-        if (!canMove)
+        if (!canMove || isDashing || isDodging)
             return;
 
         // store the last move direction if player does move
@@ -189,16 +178,21 @@ public class PlayerController : Damageable
     {
         // handle player animation facing direction
         // and switch gun to another hand if player is facing left
-        if (lookDirection.x > 0)
+        if(!isDodging)
         {
-            // _spriteRenderer.flipX = false;
-            transform.localScale = new Vector3(1f, 1f, 1f);
+            if (lookDirection.x > 0)
+                transform.localScale = new Vector3(1f, 1f, 1f);
+            else if (lookDirection.x < 0)
+                transform.localScale = new Vector3(-1f, 1f, 1f);
         }
-        else if (lookDirection.x < 0)
+        else
         {
-            // _spriteRenderer.flipX = true;
-            transform.localScale = new Vector3(-1f, 1f, 1f);
+            if (_rigidbody.velocity.x > 0)
+                transform.localScale = new Vector3(1f, 1f, 1f);
+            else if (_rigidbody.velocity.x < 0)
+                transform.localScale = new Vector3(-1f, 1f, 1f);
         }
+        
     }
 
     IEnumerator DisableMovementRoutine(float time)
@@ -208,24 +202,44 @@ public class PlayerController : Damageable
         canMove = true;
     }
 
-    IEnumerator DodgeRoutine(Vector2 DodgeDir)
+    IEnumerator DodgeRoutine(Vector2 moveDir)
     {
-        // start ghost effect
-        // _ghostEffect.Play(DodgeTime);
-
         // start Dodge
         canDodge = false;
         isDodging = true;
-        _rigidbody.velocity = DodgeDir.normalized * DodgeSpeed;
+        GunRoot.SetActive(false);
+        _rigidbody.velocity = moveDir.normalized * DodgeSpeed;
 
         yield return new WaitForSeconds(DodgeTime);
 
         // end Dodge
         isDodging = false;
+        GunRoot.SetActive(true);
         _rigidbody.velocity = Vector2.zero;
 
         // Dodge cooldown
         yield return new WaitForSeconds(DodgeCooldownTime);
         canDodge = true;
+    }
+    
+    IEnumerator DashRoutine(Vector2 moveDir)
+    {
+        // start ghost effect
+        _ghostEffect.Play(DodgeTime);
+
+        // start Dodge
+        canDash = false;
+        isDashing = true;
+        _rigidbody.velocity = moveDir.normalized * DashSpeed;
+
+        yield return new WaitForSeconds(DashTime);
+
+        // end Dodge
+        isDashing = false;
+        _rigidbody.velocity = Vector2.zero;
+
+        // Dodge cooldown
+        yield return new WaitForSeconds(DashCooldownTime);
+        canDash = true;
     }
 }

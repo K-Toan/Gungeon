@@ -120,17 +120,6 @@
                 },
                 {
                     "name": "",
-                    "id": "f063d2e0-1c87-41d4-aa80-49da5c4f51a5",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "a5ac338d-f667-4f2c-a7b0-c1346bc0c21f",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
@@ -159,6 +148,54 @@
                     "processors": "",
                     "groups": "",
                     "action": "Dodge",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Gun",
+            "id": "655634d4-491c-4271-8679-7fd3b8ca3574",
+            "actions": [
+                {
+                    "name": "Fire",
+                    "type": "PassThrough",
+                    "id": "ef930b1f-2fc5-4812-8d3e-cd76200e4050",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Reload",
+                    "type": "PassThrough",
+                    "id": "07f12aed-b069-4ea5-aeb1-72971d773438",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "41e26e31-54b7-4834-b026-2e2d6e028ea1",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d8160531-8fce-46fc-9ee9-42588f1b9374",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reload",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
