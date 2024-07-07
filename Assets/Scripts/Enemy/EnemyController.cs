@@ -110,10 +110,10 @@ public class EnemyController : MonoBehaviour
         if (!_hasGun)
             return;
 
-        if (Target != null)
-        {
-            Gun.GetComponent<GunController>().SetFiring(true);
-        }
+        // if (Target != null)
+        // {
+        //     Gun.GetComponent<GunController>().SetFiring(true);
+        // }
     }
 
     private void Move()

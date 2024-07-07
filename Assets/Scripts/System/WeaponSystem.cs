@@ -5,18 +5,20 @@ using UnityEngine;
 public class WeaponSystem : MonoBehaviour
 {
     [Header("Stats")]
-    public int currentIndex = 0;
-    private int index = 0;
+    public int WeaponCount = 0;
 
     [Header("Game Objects")]
-    public List<GameObject> WeaponPrefabs;
-    public List<GameObject> WeaponInstances;
+    public GameObject GunRoot;
+    public List<GameObject> Weapons;
 
-    private void Awake()
+    private void Start()
     {
-        foreach(GameObject weapon in WeaponPrefabs)
+        WeaponCount = GunRoot.transform.childCount;
+        for(int i = 0; i < WeaponCount; i++)
         {
-            WeaponInstances.Add(Instantiate(weapon));
+            GameObject gun = GunRoot.transform.GetChild(i).gameObject;
+            gun.SetActive(false);
+            Weapons.Add(gun);
         }
     }
 
@@ -25,13 +27,9 @@ public class WeaponSystem : MonoBehaviour
         
     }
 
-    public void AddWeapon()
+    public void AddWeapon(GameObject weapon)
     {
-
+        Weapons.Add(Instantiate(weapon));
     }
 
-    public GameObject GetWeapon()
-    {
-        return WeaponInstances[currentIndex];
-    }
 }
