@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputSystem : MonoBehaviour
+public class PlayerInputSystem : MonoBehaviour
 {
     [Header("Keyboard Input Values")]
     public Vector2 move;
@@ -12,9 +12,6 @@ public class InputSystem : MonoBehaviour
     [Space]
     public bool menu;
     public bool inventory;
-
-    [Header("Settings")]
-    public bool cursorLocked = false;
 
     public void OnMove(InputValue value)
     {
@@ -84,15 +81,5 @@ public class InputSystem : MonoBehaviour
     public void InventoryInput(bool newSprintState)
     {
         inventory = newSprintState;
-    }
-
-    private void OnApplicationFocus(bool hasFocus)
-    {
-        SetCursorState(cursorLocked);
-    }
-
-    private void SetCursorState(bool newState)
-    {
-        Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
     }
 }

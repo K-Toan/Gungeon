@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class PlayerController : Damageable
 {
+    [Header("Stats")]
+    public string Name = "";
+    public float HP = 100;
+
     [Header("Move")]
     public float MoveSpeed = 3f;
     public float Acceleration = 20f;
@@ -38,7 +42,7 @@ public class PlayerController : Damageable
     [SerializeField] private bool _hasAnimator;
     [SerializeField] private Animator _animator;
     [SerializeField] private SpriteRenderer _spriteRenderer;
-    [SerializeField] private InputSystem _input;
+    [SerializeField] private PlayerInputSystem _input;
     [SerializeField] private Rigidbody2D _rigidbody;
 
     [Header("Scripts")]
@@ -68,7 +72,7 @@ public class PlayerController : Damageable
         _ghostEffect = GetComponent<GhostEffect>();
         _flashEffect = GetComponent<FlashEffect>();
         _gunSystem = GetComponent<GunSystem>();
-        _input = GetComponent<InputSystem>();
+        _input = GetComponent<PlayerInputSystem>();
         _rigidbody = GetComponent<Rigidbody2D>();
 
         AssignAnimationHashes();

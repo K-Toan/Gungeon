@@ -3,12 +3,8 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
-    [Header("Bullet Stats")]
-    public float BulletDamage = 1f;
-    public float BulletSpeed = 5f;
-    public float BulletExistTime = 5f;
-
     [Header("Gun Stats")]
+    public string Name = "";
     [Space] // ammo
     public int CurrentMagazine = 0;
     public int MagazineCapacity = 30;
@@ -19,6 +15,11 @@ public class GunController : MonoBehaviour
     [SerializeField] private float holdTime = 0f;
     private float nextFireTime = 0f;
     private float reloadTimeLeft = 0f;
+
+    [Header("Bullet Stats")]
+    public float BulletDamage = 1f;
+    public float BulletSpeed = 5f;
+    public float BulletExistTime = 5f;
 
     [Header("States")]
     [SerializeField] private bool isReloading = false;
@@ -63,6 +64,7 @@ public class GunController : MonoBehaviour
 
     private void Start()
     {
+        Hand = transform.parent.parent.Find("Hand").gameObject;
         // GOs
         PrimaryHand = transform.Find("PrimaryHand");
         SecondaryHand = transform.Find("SecondaryHand");
@@ -238,6 +240,7 @@ public class GunController : MonoBehaviour
         Destroy(muzzle, 0.5f);
 
         bullet.GetComponent<Rigidbody2D>().velocity = shootDir * BulletSpeed;
+        bullet.GetComponent<BulletProjectile>().IgnoreCollision(GameManager.Instance.Player.GetComponent<Collider2D>());
     }
 
     private void FireRaycast()

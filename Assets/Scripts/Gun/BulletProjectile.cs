@@ -58,8 +58,8 @@ public class BulletProjectile : MonoBehaviour
         }
     }
     
-    public void IgnoreCollision(Collider collider)
+    public void IgnoreCollision(Collider2D collider)
     {
-        Physics.IgnoreCollision(transform.GetComponent<Collider>(), collider);
+        Physics2D.IgnoreCollision(transform.GetComponent<Collider2D>(), collider);
     }
 }
