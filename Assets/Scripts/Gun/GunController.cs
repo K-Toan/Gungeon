@@ -34,7 +34,7 @@ public class GunController : MonoBehaviour
     public GameObject Muzzle;
     [Space]
     public GameObject GunRoot;
-    public GameObject PlayerHand;
+    public GameObject Hand;
     private GameObject primaryHand;
     private GameObject secondaryHand;
     public Transform PrimaryHand;
@@ -54,12 +54,12 @@ public class GunController : MonoBehaviour
     private int baseSpriteOrder = 0;
 
     // private
-    private enum Hand { One, Two }
     private enum FireMode { Semi, Auto }
     private enum BulletType { Projectile, Raycast, Laser }
 
     // [Header("Animation Hash IDs")]
     private int _shootHash;
+    private int _reloadHash;
 
     private void Start()
     {
@@ -85,17 +85,18 @@ public class GunController : MonoBehaviour
     private void AssignAnimationHashes()
     {
         _shootHash = Animator.StringToHash("Shoot");
+        _reloadHash = Animator.StringToHash("Reload");
     }
 
     private void AssignHands()
     {
-        if (PlayerHand != null)
+        if (Hand != null)
         {
-            primaryHand = Instantiate(PlayerHand, PrimaryHand.transform);
+            primaryHand = Instantiate(Hand, PrimaryHand.transform);
             primaryHand.SetActive(true);
             primaryHand.transform.SetParent(PrimaryHand);
 
-            secondaryHand = Instantiate(PlayerHand, SecondaryHand.transform);
+            secondaryHand = Instantiate(Hand, SecondaryHand.transform);
             secondaryHand.SetActive(true);
             secondaryHand.transform.SetParent(SecondaryHand);
         }
@@ -103,13 +104,18 @@ public class GunController : MonoBehaviour
 
     private void Update()
     {
+        HandleRotate();
         HandleFire();
         HandleReload();
-        HandleRotate();
     }
 
     private void HandleFire()
     {
+        if(nextFireTime > 0)
+        {
+            nextFireTime -= Time.deltaTime;
+        }
+
         if (isReloading)
             return;
 
@@ -138,11 +144,45 @@ public class GunController : MonoBehaviour
         }
     }
 
+    private void HandleRotate()
+    {
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 aimDir = mousePos - (Vector2)GunRoot.transform.position;
+
+        float distanceGun2Mouse = aimDir.magnitude;
+        if (distanceGun2Mouse < 0.5)
+            return;
+
+        float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
+        GunRoot.transform.eulerAngles = new Vector3(0, 0, angle);
+
+        if(angle <= 90 && angle >= -90)
+        {
+            GunRoot.transform.localScale = new Vector3(1f, 1f, 1f);
+        }
+        else
+        {
+            GunRoot.transform.localScale = new Vector3(-1f, -1f, 1f);
+        }
+
+        if (angle < 0)
+        {
+            _spriteRenderer.sortingOrder = baseSpriteOrder + 1;
+            primaryHand.GetComponent<SpriteRenderer>().sortingOrder = baseSpriteOrder + 2;
+            secondaryHand.GetComponent<SpriteRenderer>().sortingOrder = baseSpriteOrder + 2;
+        }
+        else
+        {
+            _spriteRenderer.sortingOrder = baseSpriteOrder - 2;
+            primaryHand.GetComponent<SpriteRenderer>().sortingOrder = baseSpriteOrder - 1;
+            secondaryHand.GetComponent<SpriteRenderer>().sortingOrder = baseSpriteOrder - 1;
+        }
+    }
+
     private void Fire()
     {
         if (nextFireTime > 0)
         {
-            nextFireTime -= Time.deltaTime;
             return;
         }
 
@@ -205,43 +245,6 @@ public class GunController : MonoBehaviour
 
     }
 
-    private void HandleRotate()
-    {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 aimDir = mousePos - (Vector2)GunRoot.transform.position;
-
-        float distanceGun2Mouse = aimDir.magnitude;
-        if (distanceGun2Mouse < 0.5)
-            return;
-
-        float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
-        GunRoot.transform.eulerAngles = new Vector3(0, 0, angle);
-
-        if(angle < 90 && angle > -90)
-        {
-            GunRoot.transform.localScale = new Vector3(1f, 1f, 1f);
-        }
-        else
-        {
-            GunRoot.transform.localScale = new Vector3(-1f, -1f, 1f);
-        }
-
-
-        if (angle < 0)
-        {
-            _spriteRenderer.sortingOrder = baseSpriteOrder + 1;
-            primaryHand.GetComponent<SpriteRenderer>().sortingOrder = baseSpriteOrder + 2;
-            secondaryHand.GetComponent<SpriteRenderer>().sortingOrder = baseSpriteOrder + 2;
-        }
-        else
-        {
-            _spriteRenderer.sortingOrder = baseSpriteOrder - 2;
-            primaryHand.GetComponent<SpriteRenderer>().sortingOrder = baseSpriteOrder - 1;
-            secondaryHand.GetComponent<SpriteRenderer>().sortingOrder = baseSpriteOrder - 1;
-        }
-        Debug.Log(angle);
-    }
-
     private void HandleReload()
     {
         if (reloadTimeLeft > 0)
@@ -266,31 +269,6 @@ public class GunController : MonoBehaviour
                 }
             }
         }
-
-        // if (isReloading)
-        // {
-        //     if (reloadTimeLeft > 0)
-        //     {
-        //         reloadTimeLeft -= Time.deltaTime;
-        //         return;
-        //     }
-        //     else
-        //     {
-        //         reloadTimeLeft = 0f;
-        //         CurrentMagazine = MagazineCapacity;
-        //         isReloading = false;
-        //     }
-        // }
-        // else
-        // {
-        //     if (CurrentMagazine == MagazineCapacity || isReloading)
-        //         return;
-
-        //     if (_input.reload)
-        //     {
-        //         Reload();
-        //     }
-        // }
     }
 
     public void Reload()
@@ -301,6 +279,11 @@ public class GunController : MonoBehaviour
         if (audioSource != null && reloadSound != null)
         {
             audioSource.PlayOneShot(reloadSound);
+        }
+        
+        if (_hasAnimator)
+        {
+            _animator.SetTrigger(_reloadHash);
         }
     }
 }

@@ -30,10 +30,9 @@ public class PlayerController : Damageable
     [SerializeField] private Vector2 gunDirection;
 
     [Header("Game Objects")]
-    // [SerializeField] private bool _hasGun;
-    public GameObject Gun;
     public GameObject GunRoot;
     public GameObject Hand;
+    public GameObject CurrentGun;
 
     [Header("Components")]
     [SerializeField] private bool _hasAnimator;
@@ -45,6 +44,7 @@ public class PlayerController : Damageable
     [Header("Scripts")]
     [SerializeField] private GhostEffect _ghostEffect;
     [SerializeField] private FlashEffect _flashEffect;
+    [SerializeField] private GunSystem _gunSystem;
     [SerializeField] private GunController _gunController;
 
     [Header("Animation Hash IDs")]
@@ -67,11 +67,17 @@ public class PlayerController : Damageable
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _ghostEffect = GetComponent<GhostEffect>();
         _flashEffect = GetComponent<FlashEffect>();
+        _gunSystem = GetComponent<GunSystem>();
         _input = GetComponent<InputSystem>();
         _rigidbody = GetComponent<Rigidbody2D>();
 
-        // AssignGun();
         AssignAnimationHashes();
+    }
+
+    private void AssignGun(GameObject gun)
+    {
+        CurrentGun = gun;
+        _gunController = CurrentGun.GetComponent<GunController>();
     }
 
     private void AssignAnimationHashes()
@@ -91,6 +97,7 @@ public class PlayerController : Damageable
         HandleRotation();
         HandleDodge();
         HandleDash();
+        HandleGun();
         Move();
 
         // handle visuals
@@ -140,6 +147,26 @@ public class PlayerController : Damageable
 
             StartCoroutine(DisableMovementRoutine(DashTime));
             StartCoroutine(DashRoutine(dashDir));
+        }
+    }
+
+    private void HandleGun()
+    {
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+            AssignGun(_gunSystem.GetGun(1));
+        else if(Input.GetKeyDown(KeyCode.Alpha2))
+            AssignGun(_gunSystem.GetGun(2));
+
+        if(_gunSystem.WeaponCount > 0)
+        {
+            if(_input.fire)
+            {
+                
+            }
+            if(_input.reload)
+            {
+
+            }
         }
     }
 

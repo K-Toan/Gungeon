@@ -32,17 +32,19 @@ public class BulletProjectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.transform.gameObject.tag == "Enemy")
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             var enemy = other.transform.gameObject.GetComponent<EnemyController>();
             enemy.TakeDamage(1f, _rigidbody.velocity.normalized);
+            Hit();
         }
-        else if (other.transform.gameObject.tag == "Player")
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             var player = other.transform.gameObject.GetComponent<PlayerController>();
             player.TakeDamage(1f);
+            Hit();
         }
-        Hit();
+        
     }
 
     public void Hit()
@@ -54,5 +56,10 @@ public class BulletProjectile : MonoBehaviour
             _animator.SetTrigger(_hitHash);
             Destroy(gameObject, 0.5f);
         }
+    }
+    
+    public void IgnoreCollision(Collider collider)
+    {
+        Physics.IgnoreCollision(transform.GetComponent<Collider>(), collider);
     }
 }
