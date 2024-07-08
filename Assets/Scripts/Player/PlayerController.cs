@@ -36,11 +36,13 @@ public class PlayerController : Damageable
     [Header("Game Objects")]
     public GameObject GunRoot;
     public GameObject Hand;
-    public GameObject CurrentGun;
+    public GameObject Gun;
 
     [Header("Components")]
-    [SerializeField] private bool _hasAnimator;
+    [SerializeField] private bool hasAnimator;
     [SerializeField] private Animator _animator;
+    [SerializeField] private Collider2D _hitboxCollider;
+    [SerializeField] private Collider2D _environmentCollider;
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private PlayerInputSystem _input;
     [SerializeField] private Rigidbody2D _rigidbody;
@@ -67,7 +69,7 @@ public class PlayerController : Damageable
         GunRoot = transform.Find("GunRoot").gameObject;
 
         // components
-        _hasAnimator = TryGetComponent<Animator>(out _animator);
+        hasAnimator = TryGetComponent<Animator>(out _animator);
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _ghostEffect = GetComponent<GhostEffect>();
         _flashEffect = GetComponent<FlashEffect>();
@@ -75,13 +77,14 @@ public class PlayerController : Damageable
         _input = GetComponent<PlayerInputSystem>();
         _rigidbody = GetComponent<Rigidbody2D>();
 
+        AssignGun(_gunSystem.GetGun(1));
         AssignAnimationHashes();
     }
 
     private void AssignGun(GameObject gun)
     {
-        CurrentGun = gun;
-        _gunController = CurrentGun.GetComponent<GunController>();
+        Gun = gun;
+        _gunController = Gun.GetComponent<GunController>();
     }
 
     private void AssignAnimationHashes()
@@ -132,7 +135,7 @@ public class PlayerController : Damageable
             StartCoroutine(DodgeRoutine(dodgeDir));
 
             // animations
-            if (_hasAnimator)
+            if (hasAnimator)
             {
                 _animator.SetTrigger(_dodgeHash);
             }
@@ -163,14 +166,7 @@ public class PlayerController : Damageable
 
         if(_gunSystem.WeaponCount > 0)
         {
-            if(_input.fire)
-            {
-                
-            }
-            if(_input.reload)
-            {
-
-            }
+            _gunController.HandleInput(_input.fire, _input.reload, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
     }
 
@@ -195,7 +191,7 @@ public class PlayerController : Damageable
 
     private void HandleAnimations()
     {
-        if (_hasAnimator)
+        if (hasAnimator)
         {
             _animator.SetFloat(_speedHash, currentSpeed);
             _animator.SetFloat(_lookXHash, lookDirection.x);
@@ -238,6 +234,7 @@ public class PlayerController : Damageable
         // start Dodge
         canDodge = false;
         isDodging = true;
+        _hitboxCollider.enabled = false;
         GunRoot.SetActive(false);
         _rigidbody.velocity = moveDir.normalized * DodgeSpeed;
 
@@ -246,6 +243,7 @@ public class PlayerController : Damageable
         // end Dodge
         isDodging = false;
         GunRoot.SetActive(true);
+        _hitboxCollider.enabled = true;
         _rigidbody.velocity = Vector2.zero;
 
         // Dodge cooldown
