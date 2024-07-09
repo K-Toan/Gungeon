@@ -261,7 +261,7 @@ public class PlayerController : Damageable
     IEnumerator DashRoutine(Vector2 moveDir)
     {
         // start ghost effect
-        _ghostEffect.Play(DodgeTime);
+        _ghostEffect.enabled = true;
 
         // start Dodge
         canDash = false;
@@ -269,6 +269,9 @@ public class PlayerController : Damageable
         _rigidbody.velocity = moveDir.normalized * DashSpeed;
 
         yield return new WaitForSeconds(DashTime);
+
+        // end ghost effect
+        _ghostEffect.enabled = false;
 
         // end Dodge
         isDashing = false;

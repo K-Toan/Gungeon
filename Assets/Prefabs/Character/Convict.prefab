@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6116175142840536833}
   - component: {fileID: 5189018132818637059}
   - component: {fileID: 1670257711592835817}
-  - component: {fileID: 3156107147662089628}
+  - component: {fileID: 8564708974945737798}
   - component: {fileID: 6830038334807746142}
   - component: {fileID: 6108333440364310229}
   - component: {fileID: 400305153442663251}
@@ -25,7 +25,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1134426234064232443
 Transform:
   m_ObjectHideFlags: 0
@@ -144,22 +144,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &3156107147662089628
+--- !u!61 &8564708974945737798
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 378900360547681386}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -176,7 +176,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.15}
+  m_Offset: {x: 0, y: 0.3}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -187,7 +187,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.6, y: 0.6}
+  m_Size: {x: 0.75, y: 0.75}
   m_EdgeRadius: 0
 --- !u!58 &6830038334807746142
 CircleCollider2D:
@@ -201,10 +201,10 @@ CircleCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 8
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -324,13 +324,14 @@ MonoBehaviour:
   canDash: 1
   lookDirection: {x: 0, y: 0}
   gunDirection: {x: 0, y: 0}
+  hasGun: 0
   GunRoot: {fileID: 0}
   Hand: {fileID: 0}
   Gun: {fileID: 0}
   hasAnimator: 0
   _animator: {fileID: 0}
-  _hitboxCollider: {fileID: 6830038334807746142}
-  _environmentCollider: {fileID: 3156107147662089628}
+  _hitboxCollider: {fileID: 8564708974945737798}
+  _environmentCollider: {fileID: 6830038334807746142}
   _spriteRenderer: {fileID: 0}
   _input: {fileID: 0}
   _rigidbody: {fileID: 0}
@@ -625,7 +626,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7273770562059754994, guid: 7d2d239113f2bb74083218345fa5e0d4, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7538949000101587734, guid: 7d2d239113f2bb74083218345fa5e0d4, type: 3}
       propertyPath: m_Layer
@@ -667,7 +668,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3300636919937783901, guid: 6693cc652e96ed342b17a9581971614b, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5326681188651515840, guid: 6693cc652e96ed342b17a9581971614b, type: 3}
       propertyPath: m_Layer
