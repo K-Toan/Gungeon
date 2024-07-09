@@ -48,8 +48,6 @@ public class EnemyController : MonoBehaviour
 
     private void Start()
     {
-        TryFindTarget();
-
         // gun
         Hand = transform.Find("Hand").gameObject;
         GunRoot = transform.Find("GunRoot").gameObject;
@@ -84,31 +82,33 @@ public class EnemyController : MonoBehaviour
     {
         if (!IsDead)
         {
-            HandleRotate();
-            HandleGun();
-            Move();
+            if(TargetExists())
+            {
+                HandleRotate();
+                HandleGun();
+                Move();
+            }
 
             HandleAnimations();
             HandleFlipX();
         }
     }
 
-    private void TryFindTarget()
+    private bool TargetExists()
     {
         // game objects
-        if (!Target)
+        Target = GameManager.Instance.Player;
+        if(Target != null)
         {
-            Target = GameManager.Instance.Player;
+            return true;
         }
+        return false;
     }
 
     private void HandleRotate()
     {
-        if (Target != null)
-        {
-            // character rotation
-            lookDirection = (Target.transform.position - transform.position).normalized;
-        }
+        // character rotation
+        lookDirection = (Target.transform.position - transform.position).normalized;
     }
 
     private void HandleGun()
@@ -118,7 +118,7 @@ public class EnemyController : MonoBehaviour
 
         bool fire;
 
-        if(nextAttackTime > 0)
+        if (nextAttackTime > 0)
         {
             nextAttackTime -= Time.deltaTime;
             fire = false;
@@ -140,17 +140,14 @@ public class EnemyController : MonoBehaviour
         if (!canMove)
             return;
 
-        if (Target != null)
+        distanceToPlayer = Vector2.Distance(Target.transform.position, transform.position);
+        if (distanceToPlayer > 8)
         {
-            distanceToPlayer = Vector2.Distance(Target.transform.position, transform.position);
-            if (distanceToPlayer > 8)
-            {
-                _rigidbody.velocity = lookDirection * MoveSpeed;
-            }
-            else
-            {
-                _rigidbody.velocity = Vector2.zero;
-            }
+            _rigidbody.velocity = lookDirection * MoveSpeed;
+        }
+        else
+        {
+            _rigidbody.velocity = Vector2.zero;
         }
     }
 

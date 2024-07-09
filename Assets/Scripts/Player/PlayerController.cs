@@ -33,7 +33,8 @@ public class PlayerController : Damageable
     [SerializeField] private Vector2 lookDirection;
     [SerializeField] private Vector2 gunDirection;
 
-    [Header("Game Objects")]
+    [Header("Guns")]
+    [SerializeField] private bool hasGun;
     public GameObject GunRoot;
     public GameObject Hand;
     public GameObject Gun;
@@ -77,14 +78,18 @@ public class PlayerController : Damageable
         _input = GetComponent<PlayerInputSystem>();
         _rigidbody = GetComponent<Rigidbody2D>();
 
-        AssignGun(_gunSystem.GetGun(1));
+        AssignGun(_gunSystem.GetFirstGun());
         AssignAnimationHashes();
     }
 
     private void AssignGun(GameObject gun)
     {
-        Gun = gun;
-        _gunController = Gun.GetComponent<GunController>();
+        if(gun != null)
+        {
+            hasGun = true;
+            Gun = gun;
+            _gunController = Gun.GetComponent<GunController>();
+        }
     }
 
     private void AssignAnimationHashes()
@@ -163,8 +168,10 @@ public class PlayerController : Damageable
             AssignGun(_gunSystem.GetGun(1));
         else if(Input.GetKeyDown(KeyCode.Alpha2))
             AssignGun(_gunSystem.GetGun(2));
+        else if(Input.GetKeyDown(KeyCode.Alpha3))
+            AssignGun(_gunSystem.GetGun(3));
 
-        if(_gunSystem.WeaponCount > 0)
+        if(hasGun)
         {
             _gunController.HandleInput(_input.fire, _input.reload, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }

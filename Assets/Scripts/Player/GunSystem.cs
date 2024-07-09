@@ -56,4 +56,18 @@ public class GunSystem : MonoBehaviour
         Guns[index - 1].SetActive(true);
         return Guns[index - 1];
     }
+
+    public GameObject GetFirstGun()
+    {
+        if (WeaponCount > 0)
+        {
+            for (int i = 0; i < WeaponCount; i++)
+            {
+                Guns[i].SetActive(false);
+            }
+            Guns[0].SetActive(true);
+            return Guns[0];
+        }
+        return null;
+    }
 }

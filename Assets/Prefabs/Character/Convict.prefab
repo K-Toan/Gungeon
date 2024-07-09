@@ -19,13 +19,13 @@ GameObject:
   - component: {fileID: 8451779560244798337}
   - component: {fileID: 9002076189264772996}
   - component: {fileID: 267005106821186368}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Convict
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1134426234064232443
 Transform:
   m_ObjectHideFlags: 0
@@ -151,7 +151,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 378900360547681386}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -159,7 +159,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -363,7 +363,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5195472001515128359}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GunRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -397,7 +397,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3625146833235906076}
   - component: {fileID: 6166624078164035511}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -481,7 +481,7 @@ GameObject:
   m_Component:
   - component: {fileID: 318657109315619621}
   - component: {fileID: 5017705702739852739}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -563,6 +563,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5195472001515128359}
     m_Modifications:
+    - target: {fileID: 451238511374843503, guid: 7d2d239113f2bb74083218345fa5e0d4, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4127923833959578906, guid: 7d2d239113f2bb74083218345fa5e0d4, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4443379369824771718, guid: 7d2d239113f2bb74083218345fa5e0d4, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7126197126917213928, guid: 7d2d239113f2bb74083218345fa5e0d4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.84375
@@ -608,8 +620,16 @@ PrefabInstance:
       value: Magnum
       objectReference: {fileID: 0}
     - target: {fileID: 7273770562059754994, guid: 7d2d239113f2bb74083218345fa5e0d4, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273770562059754994, guid: 7d2d239113f2bb74083218345fa5e0d4, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7538949000101587734, guid: 7d2d239113f2bb74083218345fa5e0d4, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -629,13 +649,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5195472001515128359}
     m_Modifications:
+    - target: {fileID: 1935890011462847036, guid: 6693cc652e96ed342b17a9581971614b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788636681848339721, guid: 6693cc652e96ed342b17a9581971614b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 3300636919937783901, guid: 6693cc652e96ed342b17a9581971614b, type: 3}
       propertyPath: m_Name
       value: AK47
       objectReference: {fileID: 0}
     - target: {fileID: 3300636919937783901, guid: 6693cc652e96ed342b17a9581971614b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3300636919937783901, guid: 6693cc652e96ed342b17a9581971614b, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5326681188651515840, guid: 6693cc652e96ed342b17a9581971614b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5412092113481545861, guid: 6693cc652e96ed342b17a9581971614b, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5891540725449411274, guid: 6693cc652e96ed342b17a9581971614b, type: 3}
       propertyPath: Hand
