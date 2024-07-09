@@ -7,11 +7,11 @@ public class GunController : MonoBehaviour
     public string Name = "";
     [Space] // ammo
     public int CurrentMagazine = 0;
-    public int MagazineCapacity = 30;
+    public int MagazineCapacity = 100;
     [Space] // firerate & recoil
     public float FireRate = 300;
-    public float SpreadRate = 0.15f;
-    public float ReloadTime = 3f;
+    public float SpreadRate = 0f;
+    public float ReloadTime = 1f;
     [SerializeField] private float holdTime = 0f;
     private float nextFireTime = 0f;
     private float reloadTimeLeft = 0f;
@@ -36,29 +36,30 @@ public class GunController : MonoBehaviour
     [Header("Game Objects")]
     public GameObject Bullet;
     public GameObject Muzzle;
+    private GameObject laserBeam;
     [Space]
-    public GameObject GunRoot;
-    public GameObject Hand;
+    private GameObject GunRoot;
+    private GameObject Hand;
     private GameObject primaryHand;
     private GameObject secondaryHand;
     public Transform PrimaryHand;
     public Transform SecondaryHand;
-    [SerializeField] private Transform ShootPosition;
-    [SerializeField] private Transform MuzzlePosition;
+    private Transform ShootPosition;
+    private Transform MuzzlePosition;
 
     [Header("Components")]
-    [SerializeField] private bool _hasAnimator;
-    [SerializeField] private Animator _animator;
-    [SerializeField] private SpriteRenderer _spriteRenderer;
-    [SerializeField] private AudioClip shotSound;
-    [SerializeField] private AudioClip reloadSound;
-    [SerializeField] private AudioSource audioSource;
+    private bool hasAnimator;
+    private Animator _animator;
+    private SpriteRenderer _spriteRenderer;
+    private AudioClip shotSound;
+    private AudioClip reloadSound;
+    private AudioSource audioSource;
 
     private int baseSpriteOrder = 0;
 
     // private
     private enum FireMode { Semi, Auto }
-    private enum BulletType { Projectile, Raycast, Laser }
+    private enum BulletType { Projectile, Raycast, LaserBeam }
 
     // [Header("Animation Hash IDs")]
     private int _shootHash;
@@ -75,11 +76,15 @@ public class GunController : MonoBehaviour
         GunRoot = transform.parent.gameObject;
 
         // Components
-        _hasAnimator = TryGetComponent<Animator>(out _animator);
+        hasAnimator = TryGetComponent<Animator>(out _animator);
         _spriteRenderer = GetComponent<SpriteRenderer>();
-
-        // SFX
         audioSource = gameObject.AddComponent<AudioSource>();
+
+        if(bulletType == BulletType.LaserBeam)
+        {
+            laserBeam = Instantiate(Bullet, ShootPosition);
+            // laserBeam.SetActive(false);
+        }
 
         AssignHands();
         AssignAnimationHashes();
@@ -121,7 +126,7 @@ public class GunController : MonoBehaviour
 
     private void HandleFire()
     {
-        if(nextFireTime > 0)
+        if (nextFireTime > 0)
         {
             nextFireTime -= Time.deltaTime;
         }
@@ -165,14 +170,10 @@ public class GunController : MonoBehaviour
         float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
         GunRoot.transform.eulerAngles = new Vector3(0, 0, angle);
 
-        if(angle <= 90 && angle >= -90)
-        {
+        if (angle <= 90 && angle >= -90)
             GunRoot.transform.localScale = new Vector3(1f, 1f, 1f);
-        }
         else
-        {
             GunRoot.transform.localScale = new Vector3(-1f, -1f, 1f);
-        }
 
         if (angle < 0)
         {
@@ -204,6 +205,10 @@ public class GunController : MonoBehaviour
             case BulletType.Raycast:
                 FireRaycast();
                 break;
+
+            case BulletType.LaserBeam:
+                FireLaserBeam();
+                break;
         }
 
         if (!hasInfinityAmmo)
@@ -211,7 +216,7 @@ public class GunController : MonoBehaviour
             CurrentMagazine--;
         }
 
-        nextFireTime = 60 / FireRate;   
+        nextFireTime = 60 / FireRate;
 
         // sfx
         if (audioSource != null && shotSound != null)
@@ -222,13 +227,10 @@ public class GunController : MonoBehaviour
         // screen shake
         if (allowScreenShake)
         {
-            if (Camera.main.gameObject.TryGetComponent<CameraController>(out var mainCameraController))
-            {
-                mainCameraController.Shake(ShootPosition.right.normalized * -1);
-            }
+            GameManager.Instance.MainCamera.GetComponent<CameraController>().Shake(ShootPosition.right.normalized * -1);
         }
 
-        if (_hasAnimator)
+        if (hasAnimator)
         {
             _animator.SetTrigger(_shootHash);
         }
@@ -253,6 +255,11 @@ public class GunController : MonoBehaviour
     private void FireRaycast()
     {
 
+    }
+
+
+    private void FireLaserBeam()
+    {
     }
 
     private void HandleReload()
@@ -290,8 +297,8 @@ public class GunController : MonoBehaviour
         {
             audioSource.PlayOneShot(reloadSound);
         }
-        
-        if (_hasAnimator)
+
+        if (hasAnimator)
         {
             _animator.SetTrigger(_reloadHash);
         }
