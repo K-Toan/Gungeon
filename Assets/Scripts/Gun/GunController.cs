@@ -22,9 +22,6 @@ public class GunController : MonoBehaviour
     public float BulletExistTime = 5f;
 
     [Header("States")]
-    private bool fire = false;
-    private bool reload = false;
-    private Vector2 aimPosition;
     [SerializeField] private bool isReloading = false;
     [SerializeField] private bool allowScreenShake = false;
 
@@ -49,6 +46,7 @@ public class GunController : MonoBehaviour
     [Header("Components")]
     [SerializeField] private bool _hasAnimator;
     [SerializeField] private Animator _animator;
+    [SerializeField] private GunInputSystem _input;
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private AudioClip shotSound;
     [SerializeField] private AudioClip reloadSound;
@@ -77,6 +75,7 @@ public class GunController : MonoBehaviour
         // Components
         _hasAnimator = TryGetComponent<Animator>(out _animator);
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _input = GetComponent<GunInputSystem>();
 
         // SFX
         audioSource = gameObject.AddComponent<AudioSource>();
@@ -112,13 +111,6 @@ public class GunController : MonoBehaviour
         HandleReload();
     }
 
-    public void HandleInput(bool f, bool r, Vector2 aimPos)
-    {
-        fire = f;
-        reload = r;
-        aimPosition = aimPos;
-    }
-
     private void HandleFire()
     {
         if(nextFireTime > 0)
@@ -129,7 +121,7 @@ public class GunController : MonoBehaviour
         if (isReloading)
             return;
 
-        if (fire)
+        if (_input.fire)
         {
             // auto reload
             if (CurrentMagazine <= 0)
@@ -156,7 +148,8 @@ public class GunController : MonoBehaviour
 
     private void HandleRotate()
     {
-        Vector2 aimDir = aimPosition - (Vector2)GunRoot.transform.position;
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 aimDir = mousePos - (Vector2)GunRoot.transform.position;
 
         float distanceGun2Mouse = aimDir.magnitude;
         if (distanceGun2Mouse < 0.5)
@@ -211,7 +204,7 @@ public class GunController : MonoBehaviour
             CurrentMagazine--;
         }
 
-        nextFireTime = 60 / FireRate;   
+        nextFireTime = 60 / FireRate;
 
         // sfx
         if (audioSource != null && shotSound != null)
@@ -244,10 +237,10 @@ public class GunController : MonoBehaviour
         GameObject muzzle = Instantiate(Muzzle, MuzzlePosition.position, MuzzlePosition.rotation);
 
         Destroy(bullet, BulletExistTime);
-        Destroy(muzzle, 0.45f);
+        Destroy(muzzle, 0.5f);
 
         bullet.GetComponent<Rigidbody2D>().velocity = shootDir * BulletSpeed;
-        bullet.GetComponent<BulletProjectile>().Damage = BulletDamage;
+        bullet.GetComponent<BulletProjectile>().IgnoreCollision(GameManager.Instance.Player.GetComponent<Collider2D>());
     }
 
     private void FireRaycast()
@@ -273,7 +266,7 @@ public class GunController : MonoBehaviour
                 if (CurrentMagazine == MagazineCapacity)
                     return;
 
-                if (reload)
+                if (_input.reload)
                 {
                     Reload();
                 }

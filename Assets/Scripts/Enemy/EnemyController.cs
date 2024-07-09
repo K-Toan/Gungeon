@@ -4,12 +4,7 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     [Header("Stats")]
-    public float HP = 100f;
-    [SerializeField] private bool IsDead = false;
-    [SerializeField] private bool hasGun;
-    private float attackTime = 1f;
-    private float nextAttackTime = 1f;
-    private float distanceToPlayer;
+    public float HP = 30f;
 
     [Header("Move")]
     public float MoveSpeed = 2f;
@@ -20,22 +15,23 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private Vector2 lookDirection;
     [SerializeField] private Vector2 gunDirection;
 
-    [Header("Components")]
-    private Collider2D _collider;
+    [Header("Visuals")]
     [SerializeField] private bool _hasAnimator;
     [SerializeField] private Animator _animator;
-    [SerializeField] private Rigidbody2D _rigidbody;
     [SerializeField] private SpriteRenderer _spriteRenderer;
 
-    [Header("Scripts")]
+    [Header("Gun")]
+    [SerializeField] private bool _hasGun;
+
+    [Header("Effects")]
     [SerializeField] private FlashEffect _flashEffect;
-    [SerializeField] private GunController _gunController;
+    [SerializeField] private Rigidbody2D _rigidbody;
 
     [Header("Game Objects")]
-    public GameObject Hand;
     public GameObject Target;
-    public GameObject GunRoot;
+    public GameObject Hand;
     public GameObject Gun;
+    public GameObject ParticleRoot;
 
     // [Header("Animation Hash IDs")]
     private int _lookXHash;
@@ -48,21 +44,18 @@ public class EnemyController : MonoBehaviour
 
     private void Start()
     {
-        // gun
-        Hand = transform.Find("Hand").gameObject;
-        GunRoot = transform.Find("GunRoot").gameObject;
-        Gun = GunRoot.transform.GetChild(0).gameObject;
-        if (Gun != null)
-        {
-            hasGun = true;
-            _gunController = Gun.GetComponent<GunController>();
-        }
+        TryFindTarget();
 
         // components
         _hasAnimator = TryGetComponent<Animator>(out _animator);
-        _collider = GetComponent<Collider2D>();
         _rigidbody = GetComponent<Rigidbody2D>();
         _flashEffect = GetComponent<FlashEffect>();
+
+        // gun
+        if (Gun != null)
+        {
+            _hasGun = true;
+        }
 
         AssignAnimationHashes();
     }
@@ -80,74 +73,64 @@ public class EnemyController : MonoBehaviour
 
     private void Update()
     {
-        if (!IsDead)
-        {
-            if(TargetExists())
-            {
-                HandleRotate();
-                HandleGun();
-                Move();
-            }
+        HandleRotation();
+        HandleGun();
+        Move();
 
-            HandleAnimations();
-            HandleFlipX();
-        }
+        HandleAnimations();
+        HandleFlipX();
     }
 
-    private bool TargetExists()
+    private void TryFindTarget()
     {
         // game objects
-        Target = GameManager.Instance.Player;
-        if(Target != null)
+        if(!Target)
         {
-            return true;
+            Target = GameObject.Find("player");
         }
-        return false;
     }
 
-    private void HandleRotate()
+    private void HandleRotation()
     {
-        // character rotation
-        lookDirection = (Target.transform.position - transform.position).normalized;
+        if (Target != null)
+        {
+            // character rotation
+            lookDirection = (Target.transform.position - transform.position).normalized;
+
+            // gun rotation
+            if (_hasGun)
+            {
+                gunDirection = (Target.transform.position - Gun.transform.position).normalized;
+                Gun.transform.right = gunDirection;
+            }
+        }
     }
 
     private void HandleGun()
     {
-        if (!hasGun)
+        if (!_hasGun)
             return;
 
-        bool fire;
-
-        if (nextAttackTime > 0)
-        {
-            nextAttackTime -= Time.deltaTime;
-            fire = false;
-        }
-        else
-        {
-            fire = true;
-            nextAttackTime = attackTime;
-        }
-
-        Vector2 directionToPlayer = (Target.transform.position - GunRoot.transform.position).normalized;
-
-        _gunController.HandleInput(fire, false, Target.transform.position);
+        // if (Target != null)
+        // {
+        //     Gun.GetComponent<GunController>().SetFiring(true);
+        // }
     }
-
 
     private void Move()
     {
         if (!canMove)
             return;
 
-        distanceToPlayer = Vector2.Distance(Target.transform.position, transform.position);
-        if (distanceToPlayer > 8)
+        if (Target != null)
         {
-            _rigidbody.velocity = lookDirection * MoveSpeed;
-        }
-        else
-        {
-            _rigidbody.velocity = Vector2.zero;
+            float distance = (Target.transform.position - transform.position).magnitude;
+            float currentMoveSpeed = 0f;
+            if (distance > 4)
+            {
+                currentMoveSpeed = MoveSpeed;
+            }
+            _rigidbody.velocity = lookDirection * currentMoveSpeed;
         }
     }
 
@@ -155,10 +138,8 @@ public class EnemyController : MonoBehaviour
     {
         if (_hasAnimator)
         {
-            _animator.SetFloat(_lookXHash, lookDirection.x);
-            _animator.SetFloat(_lookYHash, lookDirection.y);
-            _animator.SetFloat(_speedXHash, _rigidbody.velocity.x);
-            _animator.SetFloat(_speedYHash, _rigidbody.velocity.y);
+            // _animator.SetFloat(_speedXHash, lookDirection.x);
+            _animator.SetFloat(_speedYHash, lookDirection.y);
             _animator.SetFloat(_speedHash, _rigidbody.velocity.magnitude);
         }
     }
@@ -193,9 +174,6 @@ public class EnemyController : MonoBehaviour
 
     public void Die()
     {
-        GunRoot.SetActive(false);
-        IsDead = true;
-        _collider.enabled = false;
         _animator.SetTrigger(_dieHash);
         Destroy(gameObject, 1f);
     }

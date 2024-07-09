@@ -1,39 +1,91 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 public class EnemyAI : MonoBehaviour
 {
-    public static EnemyAI Instance { get; private set; }
 
-    private GameObject player;
-    private LayerMask playerLayer;
+    private Transform player;
+    public Seeker seeker;
+    Path path;
+    Coroutine moveCoroutine;
+    public float moveSpeed = 3.0f;
+    public float PlayerDistance = 4.0f;
 
-    private void Awake()
+    void Start()
     {
-        if (Instance == null)
+        GameObject playerObject = GameObject.FindWithTag("Player");
+        if (playerObject != null)
         {
-            Instance = this;
-            // Keep the across scenes
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            // Destroy duplicate 
-            Destroy(gameObject);
+            player = playerObject.transform;
         }
 
-        player = GameManager.Instance.Player;
-        playerLayer = LayerMask.NameToLayer("Player");
+        seeker = GetComponent<Seeker>();
+        InvokeRepeating("CalculatePath", 0f, 0.5f);
     }
 
-    public bool CheckLineOfSight(float range)
+    // Update is called once per frame
+    void Update()
     {
-        Vector3 directionToPlayer = (player.transform.position - transform.position).normalized;
 
-        if (Physics.Raycast(transform.position, directionToPlayer, out RaycastHit hit, range))
+    }
+    private void CalculatePath()
+    {
+        if (seeker.IsDone())
         {
-            if (hit.transform == player)
-                return true;
+            seeker.StartPath(transform.position, player.position, OnPathCallBack);
+
         }
-        return false;
+    }
+    private void OnPathCallBack(Path pathCalculated)
+    {
+        if (pathCalculated.error)
+        {
+            return;
+        }
+        path = pathCalculated;
+
+        // move to target
+        MoveToTarget();
+    }
+
+    private void MoveToTarget()
+    {
+        if (moveCoroutine != null)
+        {
+            StopCoroutine(moveCoroutine);
+        }
+        moveCoroutine = StartCoroutine(MoveToTargetCoroutine());
+    }
+
+    IEnumerator MoveToTargetCoroutine()
+    {
+        int currentWP = 0;
+        while (currentWP < path.vectorPath.Count)
+        {
+            Vector2 direction = ((Vector2)path.vectorPath[currentWP] - (Vector2)transform.position).normalized;
+            Vector3 force = direction * moveSpeed * Time.deltaTime;
+            transform.position += force;
+
+            float distance = Vector2.Distance(transform.position, path.vectorPath[currentWP]);
+
+            if (distance < PlayerDistance)
+            {
+                currentWP++;
+            }
+            if (force.x != 0)
+            {
+                if (force.x < 0)
+                {
+                    transform.localScale = new Vector3(-1, 1, 0);
+                }
+                else
+                {
+                    transform.localScale = new Vector3(1, 1, 0);
+                }
+            }
+            yield return null;
+        }
     }
 }

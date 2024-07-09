@@ -18,10 +18,6 @@ public class GameManager : MonoBehaviour
     public float timeScale = 1f;
     public bool gameIsPaused = false;
 
-    [Header("Setting")]
-    [Range(0, 100)]
-    public int Volumn = 100;
-
     [Header("Scripts")]
     public InputSystem _input;
     
@@ -45,22 +41,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        _input = GetComponent<InputSystem>();
+        
     }
 
     private void Update()
     {
-        if(_input.menu)
-        {
-            if(!gameIsPaused)
-            {
-                PauseGame();
-            }
-            else
-            {
-                ContinueGame();
-            }
-        }
+        
     }
 
     private void FindGameObjects()

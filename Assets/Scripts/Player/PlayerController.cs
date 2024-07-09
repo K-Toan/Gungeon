@@ -33,17 +33,14 @@ public class PlayerController : Damageable
     [SerializeField] private Vector2 lookDirection;
     [SerializeField] private Vector2 gunDirection;
 
-    [Header("Guns")]
-    [SerializeField] private bool hasGun;
+    [Header("Game Objects")]
     public GameObject GunRoot;
     public GameObject Hand;
-    public GameObject Gun;
+    public GameObject CurrentGun;
 
     [Header("Components")]
-    [SerializeField] private bool hasAnimator;
+    [SerializeField] private bool _hasAnimator;
     [SerializeField] private Animator _animator;
-    [SerializeField] private Collider2D _hitboxCollider;
-    [SerializeField] private Collider2D _environmentCollider;
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private PlayerInputSystem _input;
     [SerializeField] private Rigidbody2D _rigidbody;
@@ -70,7 +67,7 @@ public class PlayerController : Damageable
         GunRoot = transform.Find("GunRoot").gameObject;
 
         // components
-        hasAnimator = TryGetComponent<Animator>(out _animator);
+        _hasAnimator = TryGetComponent<Animator>(out _animator);
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _ghostEffect = GetComponent<GhostEffect>();
         _flashEffect = GetComponent<FlashEffect>();
@@ -78,18 +75,13 @@ public class PlayerController : Damageable
         _input = GetComponent<PlayerInputSystem>();
         _rigidbody = GetComponent<Rigidbody2D>();
 
-        AssignGun(_gunSystem.GetFirstGun());
         AssignAnimationHashes();
     }
 
     private void AssignGun(GameObject gun)
     {
-        if(gun != null)
-        {
-            hasGun = true;
-            Gun = gun;
-            _gunController = Gun.GetComponent<GunController>();
-        }
+        CurrentGun = gun;
+        _gunController = CurrentGun.GetComponent<GunController>();
     }
 
     private void AssignAnimationHashes()
@@ -140,7 +132,7 @@ public class PlayerController : Damageable
             StartCoroutine(DodgeRoutine(dodgeDir));
 
             // animations
-            if (hasAnimator)
+            if (_hasAnimator)
             {
                 _animator.SetTrigger(_dodgeHash);
             }
@@ -168,12 +160,17 @@ public class PlayerController : Damageable
             AssignGun(_gunSystem.GetGun(1));
         else if(Input.GetKeyDown(KeyCode.Alpha2))
             AssignGun(_gunSystem.GetGun(2));
-        else if(Input.GetKeyDown(KeyCode.Alpha3))
-            AssignGun(_gunSystem.GetGun(3));
 
-        if(hasGun)
+        if(_gunSystem.WeaponCount > 0)
         {
-            _gunController.HandleInput(_input.fire, _input.reload, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            if(_input.fire)
+            {
+                
+            }
+            if(_input.reload)
+            {
+
+            }
         }
     }
 
@@ -198,7 +195,7 @@ public class PlayerController : Damageable
 
     private void HandleAnimations()
     {
-        if (hasAnimator)
+        if (_hasAnimator)
         {
             _animator.SetFloat(_speedHash, currentSpeed);
             _animator.SetFloat(_lookXHash, lookDirection.x);
@@ -241,7 +238,6 @@ public class PlayerController : Damageable
         // start Dodge
         canDodge = false;
         isDodging = true;
-        _hitboxCollider.enabled = false;
         GunRoot.SetActive(false);
         _rigidbody.velocity = moveDir.normalized * DodgeSpeed;
 
@@ -250,7 +246,6 @@ public class PlayerController : Damageable
         // end Dodge
         isDodging = false;
         GunRoot.SetActive(true);
-        _hitboxCollider.enabled = true;
         _rigidbody.velocity = Vector2.zero;
 
         // Dodge cooldown
@@ -261,7 +256,7 @@ public class PlayerController : Damageable
     IEnumerator DashRoutine(Vector2 moveDir)
     {
         // start ghost effect
-        _ghostEffect.enabled = true;
+        _ghostEffect.Play(DodgeTime);
 
         // start Dodge
         canDash = false;
@@ -269,9 +264,6 @@ public class PlayerController : Damageable
         _rigidbody.velocity = moveDir.normalized * DashSpeed;
 
         yield return new WaitForSeconds(DashTime);
-
-        // end ghost effect
-        _ghostEffect.enabled = false;
 
         // end Dodge
         isDashing = false;

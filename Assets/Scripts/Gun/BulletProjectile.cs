@@ -2,9 +2,6 @@ using UnityEngine;
 
 public class BulletProjectile : MonoBehaviour
 {
-    [Header("Stats")]
-    public float Damage = 0f;
-
     [Header("Components")]
     [SerializeField] private bool _hasAnimator;
     [SerializeField] private Animator _animator;
@@ -38,14 +35,16 @@ public class BulletProjectile : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             var enemy = other.transform.gameObject.GetComponent<EnemyController>();
-            enemy.TakeDamage(Damage, _rigidbody.velocity.normalized);
+            enemy.TakeDamage(1f, _rigidbody.velocity.normalized);
+            Hit();
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             var player = other.transform.gameObject.GetComponent<PlayerController>();
-            player.TakeDamage(Damage);
+            player.TakeDamage(1f);
+            Hit();
         }
-        Hit();
+        
     }
 
     public void Hit()

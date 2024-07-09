@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1935890011462847036}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.875, y: 0.03124988, z: 0}
+  m_LocalPosition: {x: 0.875, y: 0.06249988, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -73,6 +73,8 @@ GameObject:
   - component: {fileID: 7960205857412484626}
   - component: {fileID: 4224963032443592391}
   - component: {fileID: 7857087867701499620}
+  - component: {fileID: 1267110124791587592}
+  - component: {fileID: 6734474587192411591}
   - component: {fileID: 5891540725449411274}
   m_Layer: 0
   m_Name: AK47
@@ -162,17 +164,61 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2109698, guid: e9ff0e9064fa3b946a5bd8f373dee966, type: 3}
+  m_Sprite: {fileID: -362924821, guid: daf63e64683d29d43bee6c7449320cae, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.75, y: 0.625}
+  m_Size: {x: 1.0625, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1267110124791587592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3300636919937783901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 75d9cc80f1934de44856747129312970, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Gun
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
+--- !u!114 &6734474587192411591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3300636919937783901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33c5cdbd54ec19e49afbadc8991d30bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fire: 0
+  reload: 0
 --- !u!114 &5891540725449411274
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,23 +231,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 541ac22723d9df7418b237e5e1a2c615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: AK47
+  BulletDamage: 1
+  BulletSpeed: 15
+  BulletExistTime: 5
   CurrentMagazine: 30
   MagazineCapacity: 30
-  FireRate: 650
+  FireRate: 300
   SpreadRate: 0.05
   ReloadTime: 1.5
   holdTime: 0
-  BulletDamage: 15
-  BulletSpeed: 15
-  BulletExistTime: 5
   isReloading: 0
   allowScreenShake: 1
   hasInfinityAmmo: 0
   fireMode: 1
   bulletType: 0
-  Bullet: {fileID: 8659090651247957402, guid: f20858d90e0d2204dba63fe92fb545d0, type: 3}
-  Muzzle: {fileID: 739768679447389308, guid: 576ca55216ec94d42b1830ca505ccbf0, type: 3}
+  Bullet: {fileID: 7301774774104238881, guid: 38ec8f3d33bc09d40805dcbe248ea3f7, type: 3}
+  Muzzle: {fileID: 8443970089443374040, guid: a7bf2e46666a44546859df2c3379faa7, type: 3}
   GunRoot: {fileID: 0}
   Hand: {fileID: 0}
   PrimaryHand: {fileID: 0}
@@ -210,6 +255,7 @@ MonoBehaviour:
   MuzzlePosition: {fileID: 0}
   _hasAnimator: 0
   _animator: {fileID: 0}
+  _input: {fileID: 0}
   _spriteRenderer: {fileID: 0}
   shotSound: {fileID: 8300000, guid: 0d0bce360393d5f4abf6557233ca77e3, type: 3}
   reloadSound: {fileID: 8300000, guid: 5714052ff251728429e934c99f8be328, type: 3}
