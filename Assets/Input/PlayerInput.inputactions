@@ -2,6 +2,34 @@
     "name": "PlayerInput",
     "maps": [
         {
+            "name": "System",
+            "id": "4aac4c28-65ee-4b49-9705-41d1ece71dcd",
+            "actions": [
+                {
+                    "name": "Menu",
+                    "type": "PassThrough",
+                    "id": "c39d9acd-a1b8-4358-8b11-0e509e867217",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d6b58d49-91ad-4920-9701-9cef43945bd9",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "Player",
             "id": "56fa4904-6ec9-42bb-bcec-808e22199efe",
             "actions": [

@@ -1,15 +1,13 @@
-using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.XR;
 
 public class EnemyController : MonoBehaviour
 {
     [Header("Stats")]
-    public float HP = 1f;
+    public float HP = 30f;
 
     [Header("Move")]
-    public float MoveSpeed = 1f;
+    public float MoveSpeed = 2f;
     public Vector2 MoveDirection;
     [SerializeField] private bool canMove = true;
 
@@ -31,13 +29,13 @@ public class EnemyController : MonoBehaviour
 
     [Header("Game Objects")]
     public GameObject Target;
-    public GameObject Visual;
-    public GameObject OneHand;
-    public GameObject TwoHands;
+    public GameObject Hand;
     public GameObject Gun;
     public GameObject ParticleRoot;
 
     // [Header("Animation Hash IDs")]
+    private int _lookXHash;
+    private int _lookYHash;
     private int _speedHash;
     private int _speedXHash;
     private int _speedYHash;
@@ -46,18 +44,10 @@ public class EnemyController : MonoBehaviour
 
     private void Start()
     {
-        // game objects
-        if(!Target)
-        {
-            Target = GameObject.Find("player");
-        }
-        Visual = transform.Find("Visual").gameObject;
-        OneHand = transform.Find("OneHand").gameObject;
-        TwoHands = transform.Find("TwoHands").gameObject;
-        Gun = OneHand.transform.Find("Gun").gameObject ?? TwoHands.transform.Find("Gun").gameObject;
+        TryFindTarget();
 
         // components
-        _hasAnimator = Visual.TryGetComponent<Animator>(out _animator);
+        _hasAnimator = TryGetComponent<Animator>(out _animator);
         _rigidbody = GetComponent<Rigidbody2D>();
         _flashEffect = GetComponent<FlashEffect>();
 
@@ -72,8 +62,10 @@ public class EnemyController : MonoBehaviour
 
     private void AssignAnimationHashes()
     {
+        _lookXHash = Animator.StringToHash("LookX");
+        _lookYHash = Animator.StringToHash("LookY");
         _speedHash = Animator.StringToHash("Speed");
-        // _speedXHash = Animator.StringToHash("SpeedX");
+        _speedXHash = Animator.StringToHash("SpeedX");
         _speedYHash = Animator.StringToHash("SpeedY");
         _hitHash = Animator.StringToHash("Hit");
         _dieHash = Animator.StringToHash("Die");
@@ -87,6 +79,15 @@ public class EnemyController : MonoBehaviour
 
         HandleAnimations();
         HandleFlipX();
+    }
+
+    private void TryFindTarget()
+    {
+        // game objects
+        if(!Target)
+        {
+            Target = GameObject.Find("player");
+        }
     }
 
     private void HandleRotation()
@@ -173,9 +174,7 @@ public class EnemyController : MonoBehaviour
 
     public void Die()
     {
-        OneHand.SetActive(false);
         _animator.SetTrigger(_dieHash);
-        // canMove = false;
         Destroy(gameObject, 1f);
     }
 
