@@ -342,13 +342,9 @@ public class PlayerController : MonoBehaviour
         if (HP > 0)
         {
             StartCoroutine(TakeDamageRoutine(direction));
-            if (hasAnimator)
-                _animator.SetTrigger("Hit");
         }
         else
         {
-            if (hasAnimator)
-                _animator.SetTrigger("Die");
             Die();
         }
     }
