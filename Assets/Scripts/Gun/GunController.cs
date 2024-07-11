@@ -84,6 +84,7 @@ public class GunController : MonoBehaviour
         {
             laserBeam = Instantiate(Bullet, ShootPosition);
             laserBeam.transform.SetParent(ShootPosition);
+            laserBeam.GetComponent<LaserBeam>().Damage = BulletDamage;
             laserBeam.SetActive(false);
         }
 

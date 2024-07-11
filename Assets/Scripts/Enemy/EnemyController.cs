@@ -126,7 +126,7 @@ public class EnemyController : MonoBehaviour
         else
         {
             fire = true;
-            nextAttackTime = attackTime;
+            nextAttackTime = attackTime + Random.Range(0.4f, 0.8f);
         }
 
         Vector2 directionToPlayer = (Target.transform.position - GunRoot.transform.position).normalized;

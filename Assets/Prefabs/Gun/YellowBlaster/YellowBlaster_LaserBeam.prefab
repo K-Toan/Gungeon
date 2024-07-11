@@ -259,6 +259,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a677f74a44085418a30663befd7ccf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Damage: 0
+  CollisionLayer:
+    serializedVersion: 2
+    m_Bits: 136
   LaserStart: {fileID: 5469434795387785076}
   LaserMiddle: {fileID: 3422347142536677568}
   LaserEnd: {fileID: 8660285020793516746}

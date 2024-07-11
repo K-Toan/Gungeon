@@ -37,7 +37,7 @@ public class PlayerController : Damageable
     [SerializeField] private bool canDash = true;
 
     [Header("Sandevistan")]
-    [SerializeField] private bool hasSandevistan = true;
+    [SerializeField] private bool canSlowDownTime = true;
     [SerializeField] private bool isSlowedDown = false;
     public float SlowTime = 5f;
     public float SlowFactor = 0.5f;
@@ -190,7 +190,10 @@ public class PlayerController : Damageable
                     break;
 
                 case Ability.Sandevistan:
-                    StartCoroutine(SandevistanRoutine(SlowTime, SlowFactor));
+                    if (canSlowDownTime)
+                    {
+                        StartCoroutine(SandevistanRoutine(SlowTime, SlowFactor));
+                    }
                     break;
             }
         }
@@ -316,6 +319,7 @@ public class PlayerController : Damageable
         // start ghost effect
         _ghostEffect.enabled = true;
         isSlowedDown = true;
+        canSlowDownTime = false;
 
         yield return new WaitForSecondsRealtime(time);
 
@@ -325,5 +329,6 @@ public class PlayerController : Damageable
 
         // Ability cooldown
         yield return new WaitForSeconds(AbilityCooldownTime);
+        canSlowDownTime = true;
     }
 }

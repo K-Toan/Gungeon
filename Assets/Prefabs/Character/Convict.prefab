@@ -25,7 +25,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1134426234064232443
 Transform:
   m_ObjectHideFlags: 0
@@ -286,7 +286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   move: {x: 0, y: 0}
   dodge: 0
-  dash: 0
+  ability: 0
   fire: 0
   reload: 0
   menu: 0
@@ -306,7 +306,7 @@ MonoBehaviour:
   HealthPoint: 100
   Name: Convict
   HP: 100
-  MoveSpeed: 3.5
+  MoveSpeed: 4
   Acceleration: 20
   MoveDirection: {x: 0, y: 0}
   LastMoveDirection: {x: 0, y: 0}
@@ -317,11 +317,17 @@ MonoBehaviour:
   DodgeCooldownTime: 0.25
   isDodging: 0
   canDodge: 1
+  PlayerAbility: 1
+  AbilityCooldownTime: 1
+  ShieldTime: 5
   DashSpeed: 15
   DashTime: 0.25
-  DashCooldownTime: 0.25
   isDashing: 0
   canDash: 1
+  canSlowDownTime: 1
+  isSlowedDown: 0
+  SlowTime: 5
+  SlowFactor: 0.5
   lookDirection: {x: 0, y: 0}
   gunDirection: {x: 0, y: 0}
   hasGun: 0
