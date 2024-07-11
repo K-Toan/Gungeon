@@ -335,8 +335,9 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float damage, Vector2 direction)
     {
-        if (canHit)
+        if (!canHit)
             return;
+
         HP -= damage;
         if (HP > 0)
         {
@@ -356,7 +357,7 @@ public class PlayerController : MonoBehaviour
     {
         _rigidbody.velocity = dir;
         canHit = false;
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(1f);
         _rigidbody.velocity = Vector2.zero;
         canHit = true;
     }

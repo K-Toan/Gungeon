@@ -201,7 +201,7 @@ public class EnemyController : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             var player = other.transform.gameObject.GetComponent<PlayerController>();
-            player.TakeDamage(Damage, _rigidbody.velocity);
+            player.TakeDamage(Damage, _rigidbody.velocity * 2);
         }
     }
 
