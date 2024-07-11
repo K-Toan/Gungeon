@@ -6,8 +6,8 @@ public class GunController : MonoBehaviour
     [Header("Gun Stats")]
     public string Name = "";
     [Space] // ammo
-    public int CurrentMagazine = 0;
-    public int MagazineCapacity = 100;
+    public float CurrentMagazine = 0;
+    public float MagazineCapacity = 100;
     [Space] // firerate & recoil
     public float FireRate = 300;
     public float SpreadRate = 0f;
@@ -51,8 +51,8 @@ public class GunController : MonoBehaviour
     private bool hasAnimator;
     private Animator _animator;
     private SpriteRenderer _spriteRenderer;
-    private AudioClip shotSound;
-    private AudioClip reloadSound;
+    [SerializeField] private AudioClip shotSound;
+    [SerializeField] private AudioClip reloadSound;
     private AudioSource audioSource;
 
     private int baseSpriteOrder = 0;
@@ -80,10 +80,11 @@ public class GunController : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
         audioSource = gameObject.AddComponent<AudioSource>();
 
-        if(bulletType == BulletType.LaserBeam)
+        if (bulletType == BulletType.LaserBeam)
         {
             laserBeam = Instantiate(Bullet, ShootPosition);
-            // laserBeam.SetActive(false);
+            laserBeam.transform.SetParent(ShootPosition);
+            laserBeam.SetActive(false);
         }
 
         AssignHands();
@@ -151,11 +152,22 @@ public class GunController : MonoBehaviour
                     Fire();
                     break;
             }
+
+            if (bulletType == BulletType.LaserBeam)
+            {
+                FireLaserBeam();
+            }
+
             holdTime += Time.deltaTime;
         }
         else
         {
             holdTime = 0f;
+
+            if (bulletType == BulletType.LaserBeam)
+            {
+                StopLaserBeam();
+            }
         }
     }
 
@@ -192,9 +204,7 @@ public class GunController : MonoBehaviour
     private void Fire()
     {
         if (nextFireTime > 0)
-        {
             return;
-        }
 
         switch (bulletType)
         {
@@ -205,23 +215,6 @@ public class GunController : MonoBehaviour
             case BulletType.Raycast:
                 FireRaycast();
                 break;
-
-            case BulletType.LaserBeam:
-                FireLaserBeam();
-                break;
-        }
-
-        if (!hasInfinityAmmo)
-        {
-            CurrentMagazine--;
-        }
-
-        nextFireTime = 60 / FireRate;
-
-        // sfx
-        if (audioSource != null && shotSound != null)
-        {
-            audioSource.PlayOneShot(shotSound);
         }
 
         // screen shake
@@ -238,6 +231,10 @@ public class GunController : MonoBehaviour
 
     private void FireProjectile()
     {
+        nextFireTime = 60 / FireRate;
+        if (!hasInfinityAmmo)
+            CurrentMagazine--;
+
         // recoil/spread
         float spread = Random.Range(-SpreadRate, SpreadRate);
         Vector2 shootDir = ShootPosition.right + new Vector3(0f, spread);
@@ -250,6 +247,12 @@ public class GunController : MonoBehaviour
 
         bullet.GetComponent<Rigidbody2D>().velocity = shootDir * BulletSpeed;
         bullet.GetComponent<BulletProjectile>().Damage = BulletDamage;
+
+        // sfx
+        if (audioSource != null && shotSound != null)
+        {
+            audioSource.PlayOneShot(shotSound);
+        }
     }
 
     private void FireRaycast()
@@ -257,9 +260,34 @@ public class GunController : MonoBehaviour
 
     }
 
-
     private void FireLaserBeam()
     {
+        CurrentMagazine -= Time.deltaTime;
+        if (laserBeam != null && !laserBeam.activeSelf)
+        {
+            laserBeam.SetActive(true);
+        }
+        if (holdTime > 0 && !audioSource.isPlaying)
+        {
+            if (audioSource != null && shotSound != null)
+            {
+                audioSource.clip = shotSound;
+                audioSource.loop = true;
+                audioSource.Play();
+            }
+        }
+    }
+
+    private void StopLaserBeam()
+    {
+        if (laserBeam != null && laserBeam.activeSelf)
+        {
+            laserBeam.SetActive(false);
+        }
+        if (audioSource != null && reloadSound != null)
+        {
+            audioSource.Stop();
+        }
     }
 
     private void HandleReload()
@@ -274,6 +302,11 @@ public class GunController : MonoBehaviour
             {
                 isReloading = false;
                 CurrentMagazine = MagazineCapacity;
+
+                if (audioSource != null && reloadSound != null)
+                {
+                    audioSource.Stop();
+                }
             }
             else
             {
@@ -295,7 +328,9 @@ public class GunController : MonoBehaviour
 
         if (audioSource != null && reloadSound != null)
         {
-            audioSource.PlayOneShot(reloadSound);
+            audioSource.clip = reloadSound;
+            audioSource.loop = true;
+            audioSource.Play();
         }
 
         if (hasAnimator)

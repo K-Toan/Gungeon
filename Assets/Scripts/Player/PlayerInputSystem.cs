@@ -6,7 +6,7 @@ public class PlayerInputSystem : MonoBehaviour
     [Header("Keyboard Input Values")]
     public Vector2 move;
     public bool dodge;
-    public bool dash;
+    public bool ability;
     public bool fire;
     public bool reload;
     [Space]
@@ -23,9 +23,9 @@ public class PlayerInputSystem : MonoBehaviour
         DodgeInput(value.isPressed);
     }
 
-    public void OnDash(InputValue value)
+    public void OnAbility(InputValue value)
     {
-        DashInput(value.isPressed);
+        AbilityInput(value.isPressed);
     }
 
     public void OnFire(InputValue value)
@@ -53,9 +53,9 @@ public class PlayerInputSystem : MonoBehaviour
         move = newMoveDirection;
     }
 
-    public void DashInput(bool newSprintState)
+    public void AbilityInput(bool newSprintState)
     {
-        dash = newSprintState;
+        ability = newSprintState;
     }
 
     public void DodgeInput(bool newSprintState)

@@ -43,7 +43,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Dash",
+                    "name": "Ability",
                     "type": "PassThrough",
                     "id": "d6b4ca20-b7f1-46da-a43e-de0296caf95d",
                     "expectedControlType": "Button",
@@ -142,7 +142,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Dash",
+                    "action": "Ability",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     [Header("State")]
     public float timeScale = 1f;
     public bool gameIsPaused = false;
+    public bool isSlowedDown = false;
 
     [Header("Setting")]
     [Range(0, 100)]
@@ -24,21 +25,19 @@ public class GameManager : MonoBehaviour
 
     [Header("Scripts")]
     public InputSystem _input;
-    
+
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            // Keep the across scenes
             DontDestroyOnLoad(gameObject);
         }
         else
         {
-            // Destroy duplicate 
             Destroy(gameObject);
         }
-        
+
         FindGameObjects();
         FindUIs();
     }
@@ -50,9 +49,9 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if(_input.menu)
+        if (_input.menu)
         {
-            if(!gameIsPaused)
+            if (!gameIsPaused)
             {
                 PauseGame();
             }
@@ -61,6 +60,19 @@ public class GameManager : MonoBehaviour
                 ContinueGame();
             }
         }
+        // if (Input.GetKeyDown(KeyCode.F))
+        // {
+        //     if (isSlowedDown)
+        //     {
+        //         ResetTimeScale();
+        //         isSlowedDown = false;
+        //     }
+        //     else
+        //     {
+        //         SlowDownGame(0.5f);
+        //         isSlowedDown = true;
+        //     }
+        // }
     }
 
     private void FindGameObjects()
@@ -85,5 +97,26 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = timeScale;
         AudioListener.pause = false;
+    }
+
+    public IEnumerator SlowDownGameRoutine(float time, float factor)
+    {
+        SlowDownGame(factor);
+        yield return new WaitForSecondsRealtime(time);
+        ResetTimeScale();
+    }
+
+    private void SlowDownGame(float factor)
+    {
+        Time.timeScale = factor;
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        isSlowedDown = true;
+    }
+
+    private void ResetTimeScale()
+    {
+        Time.timeScale = 1.0f;
+        Time.fixedDeltaTime = 0.02f;
+        isSlowedDown = false;
     }
 }

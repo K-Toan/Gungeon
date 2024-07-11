@@ -14,7 +14,7 @@ public class GunSystem : MonoBehaviour
     public GameObject GunRoot;
     public List<GameObject> Guns;
 
-    private void Start()
+    private void Awake()
     {
         GunRoot = transform.Find("GunRoot").gameObject;
         List<GameObject> Guns = new();

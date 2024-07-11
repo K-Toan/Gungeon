@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -22,12 +23,24 @@ public class PlayerController : Damageable
     [SerializeField] private bool isDodging = false;
     [SerializeField] private bool canDodge = true;
 
+    [Header("Ability")]
+    public Ability PlayerAbility;
+    public float AbilityCooldownTime = 1f;
+
+    [Header("Shield")]
+    public float ShieldTime = 5f;
+
     [Header("Dash")]
     public float DashSpeed = 15f;
     public float DashTime = 0.25f;
-    public float DashCooldownTime = 0.25f;
     [SerializeField] private bool isDashing = false;
     [SerializeField] private bool canDash = true;
+
+    [Header("Sandevistan")]
+    [SerializeField] private bool hasSandevistan = true;
+    [SerializeField] private bool isSlowedDown = false;
+    public float SlowTime = 5f;
+    public float SlowFactor = 0.5f;
 
     [Header("Rotation")]
     [SerializeField] private Vector2 lookDirection;
@@ -63,6 +76,8 @@ public class PlayerController : Damageable
     private int _dodgeHash;
     private int _dieHash;
 
+    public enum Ability { Shield, Dash, Sandevistan }
+
     private void Start()
     {
         // game objects
@@ -84,11 +99,16 @@ public class PlayerController : Damageable
 
     private void AssignGun(GameObject gun)
     {
-        if(gun != null)
+        if (gun != null)
         {
+            Debug.Log("Assigning gun: " + gun.name);
             hasGun = true;
             Gun = gun;
             _gunController = Gun.GetComponent<GunController>();
+        }
+        else
+        {
+            Debug.LogWarning("Gun is null!");
         }
     }
 
@@ -108,7 +128,7 @@ public class PlayerController : Damageable
         // handle logic parts
         HandleRotation();
         HandleDodge();
-        HandleDash();
+        HandleAbility();
         HandleGun();
         Move();
 
@@ -147,31 +167,45 @@ public class PlayerController : Damageable
         }
     }
 
-    private void HandleDash()
+    private void HandleAbility()
     {
-        if (!canDash || isDodging || isDashing)
+        if (isDodging || isDashing)
             return;
 
-        if (_input.dash && _input.move != Vector2.zero)
+        if (_input.ability)
         {
-            // recalculate Dodge direction
-            Vector2 dashDir = _input.move.normalized;
+            switch (PlayerAbility)
+            {
+                case Ability.Dash:
+                    if (canDash && _input.move != Vector2.zero)
+                    {
+                        // recalculate Dodge direction
+                        Vector2 dashDir = _input.move.normalized;
+                        StartCoroutine(DashRoutine(dashDir));
+                    }
+                    break;
 
-            StartCoroutine(DisableMovementRoutine(DashTime));
-            StartCoroutine(DashRoutine(dashDir));
+                case Ability.Shield:
+
+                    break;
+
+                case Ability.Sandevistan:
+                    StartCoroutine(SandevistanRoutine(SlowTime, SlowFactor));
+                    break;
+            }
         }
     }
 
     private void HandleGun()
     {
-        if(Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
             AssignGun(_gunSystem.GetGun(1));
-        else if(Input.GetKeyDown(KeyCode.Alpha2))
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
             AssignGun(_gunSystem.GetGun(2));
-        else if(Input.GetKeyDown(KeyCode.Alpha3))
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
             AssignGun(_gunSystem.GetGun(3));
 
-        if(hasGun)
+        if (hasGun)
         {
             _gunController.HandleInput(_input.fire, _input.reload, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
@@ -182,18 +216,9 @@ public class PlayerController : Damageable
         if (!canMove || isDashing || isDodging)
             return;
 
-        // store the last move direction if player does move
-        if (_input.move.x != 0 || _input.move.y != 0)
-            LastMoveDirection = MoveDirection;
+        _rigidbody.velocity = _input.move.normalized * MoveSpeed;
 
-        MoveDirection = _input.move.normalized;
-
-        // move char by rigidbody
-        // _rigidbody.velocity = Vector2.Lerp(_rigidbody.velocity, MoveDirection * MoveSpeed, Acceleration * Time.deltaTime);
-        _rigidbody.velocity = MoveDirection * MoveSpeed;
-
-        // current magnitude speed
-        currentSpeed = _rigidbody.velocity.magnitude;
+        currentSpeed = _rigidbody.velocity.magnitude * (isSlowedDown ? 2 / SlowFactor : 1);
     }
 
     private void HandleAnimations()
@@ -212,7 +237,7 @@ public class PlayerController : Damageable
     {
         // handle player animation facing direction
         // and switch gun to another hand if player is facing left
-        if(!isDodging)
+        if (!isDodging)
         {
             if (lookDirection.x > 0)
                 transform.localScale = new Vector3(1f, 1f, 1f);
@@ -226,7 +251,7 @@ public class PlayerController : Damageable
             else if (_rigidbody.velocity.x < 0)
                 transform.localScale = new Vector3(-1f, 1f, 1f);
         }
-        
+
     }
 
     IEnumerator DisableMovementRoutine(float time)
@@ -257,9 +282,11 @@ public class PlayerController : Damageable
         yield return new WaitForSeconds(DodgeCooldownTime);
         canDodge = true;
     }
-    
+
     IEnumerator DashRoutine(Vector2 moveDir)
     {
+        StartCoroutine(DisableMovementRoutine(DashTime));
+
         // start ghost effect
         _ghostEffect.enabled = true;
 
@@ -278,7 +305,25 @@ public class PlayerController : Damageable
         _rigidbody.velocity = Vector2.zero;
 
         // Dodge cooldown
-        yield return new WaitForSeconds(DashCooldownTime);
+        yield return new WaitForSeconds(AbilityCooldownTime);
         canDash = true;
+    }
+
+    IEnumerator SandevistanRoutine(float time, float factor)
+    {
+        StartCoroutine(GameManager.Instance.SlowDownGameRoutine(time, factor));
+
+        // start ghost effect
+        _ghostEffect.enabled = true;
+        isSlowedDown = true;
+
+        yield return new WaitForSecondsRealtime(time);
+
+        // end ghost effect
+        _ghostEffect.enabled = false;
+        isSlowedDown = false;
+
+        // Ability cooldown
+        yield return new WaitForSeconds(AbilityCooldownTime);
     }
 }
