@@ -43,7 +43,7 @@ public class BulletProjectile : MonoBehaviour
         else if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             var player = other.transform.gameObject.GetComponent<PlayerController>();
-            player.TakeDamage(Damage);
+            player.TakeDamage(Damage, _rigidbody.velocity.normalized);
         }
         Hit();
     }

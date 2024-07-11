@@ -29,7 +29,7 @@ public class LaserBeam : MonoBehaviour
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
                 var enemy = hit.collider.transform.gameObject.GetComponent<EnemyController>();
-                enemy.TakeDamage(Damage * Time.deltaTime, transform.position);
+                enemy.TakeDamage(Damage * Time.deltaTime, transform.right);
             }
         }
 

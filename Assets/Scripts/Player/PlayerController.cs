@@ -2,11 +2,12 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class PlayerController : Damageable
+public class PlayerController : MonoBehaviour
 {
     [Header("Stats")]
     public string Name = "";
     public float HP = 100;
+    public bool canHit = true;
 
     [Header("Move")]
     public float MoveSpeed = 3f;
@@ -330,5 +331,38 @@ public class PlayerController : Damageable
         // Ability cooldown
         yield return new WaitForSeconds(AbilityCooldownTime);
         canSlowDownTime = true;
+    }
+
+    public void TakeDamage(float damage, Vector2 direction)
+    {
+        if (canHit)
+            return;
+        HP -= damage;
+        if (HP > 0)
+        {
+            StartCoroutine(TakeDamageRoutine(direction));
+            if (hasAnimator)
+                _animator.SetTrigger("Hit");
+        }
+        else
+        {
+            if (hasAnimator)
+                _animator.SetTrigger("Die");
+            Die();
+        }
+    }
+
+    private IEnumerator TakeDamageRoutine(Vector2 dir)
+    {
+        _rigidbody.velocity = dir;
+        canHit = false;
+        yield return new WaitForSeconds(0.75f);
+        _rigidbody.velocity = Vector2.zero;
+        canHit = true;
+    }
+
+    public void Die()
+    {
+        Destroy(gameObject);
     }
 }

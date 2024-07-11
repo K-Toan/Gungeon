@@ -5,6 +5,7 @@ public class EnemyController : MonoBehaviour
 {
     [Header("Stats")]
     public float HP = 100f;
+    public float Damage = 10f;
     [SerializeField] private bool IsDead = false;
     [SerializeField] private bool hasGun;
     private float attackTime = 1f;
@@ -15,6 +16,7 @@ public class EnemyController : MonoBehaviour
     public float MoveSpeed = 2f;
     public Vector2 MoveDirection;
     [SerializeField] private bool canMove = true;
+    public float StopRange = 0f;
 
     [Header("Rotation")]
     [SerializeField] private Vector2 lookDirection;
@@ -51,7 +53,10 @@ public class EnemyController : MonoBehaviour
         // gun
         Hand = transform.Find("Hand").gameObject;
         GunRoot = transform.Find("GunRoot").gameObject;
-        Gun = GunRoot.transform.GetChild(0).gameObject;
+        if (GunRoot.transform.childCount > 0)
+        {
+            Gun = GunRoot.transform.GetChild(0).gameObject;
+        }
         if (Gun != null)
         {
             hasGun = true;
@@ -82,7 +87,7 @@ public class EnemyController : MonoBehaviour
     {
         if (!IsDead)
         {
-            if(TargetExists())
+            if (TargetExists())
             {
                 HandleRotate();
                 HandleGun();
@@ -98,7 +103,7 @@ public class EnemyController : MonoBehaviour
     {
         // game objects
         Target = GameManager.Instance.Player;
-        if(Target != null)
+        if (Target != null)
         {
             return true;
         }
@@ -141,7 +146,7 @@ public class EnemyController : MonoBehaviour
             return;
 
         distanceToPlayer = Vector2.Distance(Target.transform.position, transform.position);
-        if (distanceToPlayer > 8)
+        if (distanceToPlayer > StopRange)
         {
             _rigidbody.velocity = lookDirection * MoveSpeed;
         }
@@ -188,6 +193,15 @@ public class EnemyController : MonoBehaviour
         else
         {
             Die();
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            var player = other.transform.gameObject.GetComponent<PlayerController>();
+            player.TakeDamage(Damage, _rigidbody.velocity);
         }
     }
 
