@@ -303,9 +303,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9aaa40d6bbc6e741bca2428d552198d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthPoint: 100
   Name: Convict
   HP: 100
+  canHit: 1
   MoveSpeed: 4
   Acceleration: 20
   MoveDirection: {x: 0, y: 0}

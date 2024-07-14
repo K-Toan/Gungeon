@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     [Header("Game Objects")]
     public GameObject MainCamera;
     public GameObject Player;
-    public GameObject[] Enemies;
+    public GameObject[] Playables;
 
     [Header("UI")]
     public Canvas Menu;
@@ -79,7 +79,6 @@ public class GameManager : MonoBehaviour
     {
         MainCamera = Camera.main.gameObject;
         Player = GameObject.FindGameObjectWithTag("Player");
-        Enemies = GameObject.FindGameObjectsWithTag("Enemy");
     }
 
     private void FindUIs()
