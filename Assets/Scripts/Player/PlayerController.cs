@@ -1,7 +1,7 @@
-using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     [Header("Stats")]
@@ -60,6 +60,7 @@ public class PlayerController : MonoBehaviour
     public GameObject GunRoot;
     public GameObject Hand;
     public GameObject Gun;
+    public Image ImageGun;
 
     [Header("Components")]
     [SerializeField] private bool hasAnimator;
@@ -85,20 +86,26 @@ public class PlayerController : MonoBehaviour
     private int _dodgeHash;
     private int _dieHash;
 
-    [Header("Health")]
-    public HealthBarController healthBar;
+    [Header("HealthBar UI")]
+    public HealthBarUI healthBar;
     public enum Ability { Shield, Dash, Sandevistan }
 
     private void Start()
     {
-        //set HP
+
+        // Set HP
+        healthBar = FindObjectOfType<HealthBarUI>();
         CurrentHP = MaxHP;
         healthBar.SetMaxHealth((int)MaxHP);
 
         // game objects
         Hand = transform.Find("Hand").gameObject;
         GunRoot = transform.Find("GunRoot").gameObject;
-
+        ImageGun = GameObject.Find("GunImage").GetComponent<Image>();
+        if (ImageGun == null)
+        {
+            Debug.LogError("ImageGun not found!");
+        }
         // components
         hasAnimator = TryGetComponent<Animator>(out _animator);
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -108,6 +115,9 @@ public class PlayerController : MonoBehaviour
         _input = GetComponent<PlayerInputSystem>();
         _rigidbody = GetComponent<Rigidbody2D>();
 
+        GameObject firstGun = _gunSystem.GetFirstGun();
+        AssignGun(firstGun);
+        UpdateImageGun(firstGun, gunSizes[1]);
         AssignGun(_gunSystem.GetFirstGun());
         AssignAnimationHashes();
     }
@@ -214,20 +224,52 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private Dictionary<int, Vector2> gunSizes = new Dictionary<int, Vector2>
+    {
+    { 1, new Vector2(110, 50) },
+    { 2, new Vector2(90, 90) },
+    { 3, new Vector2(90, 90) }
+    };
     private void HandleGun()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
             AssignGun(_gunSystem.GetGun(1));
+            UpdateImageGun(_gunSystem.GetGun(1), gunSizes[1]);
+        }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
             AssignGun(_gunSystem.GetGun(2));
+            UpdateImageGun(_gunSystem.GetGun(2), gunSizes[2]);
+        }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
             AssignGun(_gunSystem.GetGun(3));
+            UpdateImageGun(_gunSystem.GetGun(3), gunSizes[3]);
+        }
 
         if (hasGun)
         {
             _gunController.HandleInput(_input.fire, _input.reload, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
     }
+    private void UpdateImageGun(GameObject gun, Vector2 size)
+    {
+        if (ImageGun != null && gun != null)
+        {
+            SpriteRenderer gunSpriteRenderer = gun.GetComponent<SpriteRenderer>();
+            if (gunSpriteRenderer != null)
+            {
+                ImageGun.sprite = gunSpriteRenderer.sprite;
+                ImageGun.rectTransform.sizeDelta = size; // Thay đổi kích thước của ImageGun
+            }
+            else
+            {
+                Debug.LogWarning("Gun does not have a SpriteRenderer component!");
+            }
+        }
+    }
+
 
     private void Move()
     {

@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class GunController : MonoBehaviour
 {
     [Header("Gun Stats")]
@@ -56,6 +56,10 @@ public class GunController : MonoBehaviour
     private AudioSource audioSource;
 
     private int baseSpriteOrder = 0;
+    
+    //UI
+    [Header("Ammo Text")]
+    public Text ammoText;
 
     // private
     private enum FireMode { Semi, Auto }
@@ -67,6 +71,12 @@ public class GunController : MonoBehaviour
 
     private void Start()
     {
+        GameObject ammoTextObject = GameObject.Find("AmmoText");
+        if (ammoTextObject != null)
+        {
+            ammoText = ammoTextObject.GetComponent<Text>();
+        }
+
         Hand = transform.parent.parent.Find("Hand").gameObject;
         // GOs
         PrimaryHand = transform.Find("PrimaryHand");
@@ -117,6 +127,10 @@ public class GunController : MonoBehaviour
         HandleRotate();
         HandleFire();
         HandleReload();
+        if (ammoText != null)
+        {
+            ammoText.text = $"{CurrentMagazine}/{MagazineCapacity}";
+        }
     }
 
     public void HandleInput(bool f, bool r, Vector2 aimPos)
