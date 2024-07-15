@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class BulletProjectile : MonoBehaviour
 {
+    [Header("Stats")]
+    public float Damage = 0f;
+
     [Header("Components")]
     [SerializeField] private bool _hasAnimator;
     [SerializeField] private Animator _animator;
@@ -32,15 +35,15 @@ public class BulletProjectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.transform.gameObject.tag == "Enemy")
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             var enemy = other.transform.gameObject.GetComponent<EnemyController>();
-            enemy.TakeDamage(1f, _rigidbody.velocity.normalized);
+            enemy.TakeDamage(Damage, _rigidbody.velocity.normalized);
         }
-        else if (other.transform.gameObject.tag == "Player")
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             var player = other.transform.gameObject.GetComponent<PlayerController>();
-            player.TakeDamage(1f);
+            player.TakeDamage(Damage, _rigidbody.velocity.normalized);
         }
         Hit();
     }
@@ -54,5 +57,10 @@ public class BulletProjectile : MonoBehaviour
             _animator.SetTrigger(_hitHash);
             Destroy(gameObject, 0.5f);
         }
+    }
+    
+    public void IgnoreCollision(Collider2D collider)
+    {
+        Physics2D.IgnoreCollision(transform.GetComponent<Collider2D>(), collider);
     }
 }

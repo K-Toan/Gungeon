@@ -3,109 +3,208 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
+    [Header("Gun Stats")]
+    public string Name = "";
+    [Space] // ammo
+    public float CurrentMagazine = 0;
+    public float MagazineCapacity = 100;
+    [Space] // firerate & recoil
+    public float FireRate = 300;
+    public float SpreadRate = 0f;
+    public float ReloadTime = 1f;
+    [SerializeField] private float holdTime = 0f;
+    private float nextFireTime = 0f;
+    private float reloadTimeLeft = 0f;
+
     [Header("Bullet Stats")]
     public float BulletDamage = 1f;
     public float BulletSpeed = 5f;
-    [Header("Gun Stats")]
-    [Space] // ammo
-    public int CurrentMagazine = 0;
-    public int MagazineCapacity = 30;
-    [Space] // firerate & recoil
-    public float FireRate = 300;
-    public float SpreadRate = 0.15f;
-    public float ReloadTime = 3f;
-    private float holdTime = 0f;
+    public float BulletExistTime = 5f;
 
     [Header("States")]
+    private bool fire = false;
+    private bool reload = false;
+    private Vector2 aimPosition;
     [SerializeField] private bool isReloading = false;
-    [SerializeField] private bool isFiring = false;
-    [SerializeField] private bool canFire = true;
     [SerializeField] private bool allowScreenShake = false;
 
     [Header("Modes/Types")]
-    [SerializeField] private bool hasInfinityAmmo = true;
-    [SerializeField] private Hand handMode = Hand.One;
+    [SerializeField] private bool hasInfinityAmmo = false;
     [SerializeField] private FireMode fireMode = FireMode.Semi;
     [SerializeField] private BulletType bulletType = BulletType.Projectile;
 
     [Header("Game Objects")]
     public GameObject Bullet;
     public GameObject Muzzle;
-    public GameObject HandGrip;
-    [SerializeField] private Transform ShootPosition;
-    [SerializeField] private Transform MuzzlePosition;
+    private GameObject laserBeam;
+    [Space]
+    private GameObject GunRoot;
+    private GameObject Hand;
+    private GameObject primaryHand;
+    private GameObject secondaryHand;
+    public Transform PrimaryHand;
+    public Transform SecondaryHand;
+    private Transform ShootPosition;
+    private Transform MuzzlePosition;
 
     [Header("Components")]
-    [SerializeField] private bool _hasAnimator;
-    [SerializeField] private Animator _animator;
-    [SerializeField] private SpriteRenderer _spriteRenderer;
+    private bool hasAnimator;
+    private Animator _animator;
+    private SpriteRenderer _spriteRenderer;
     [SerializeField] private AudioClip shotSound;
     [SerializeField] private AudioClip reloadSound;
     private AudioSource audioSource;
 
+    private int baseSpriteOrder = 0;
+
     // private
-    private enum Hand { One, Two }
     private enum FireMode { Semi, Auto }
-    private enum BulletType { Projectile, Raycast, Laser }
+    private enum BulletType { Projectile, Raycast, LaserBeam }
 
     // [Header("Animation Hash IDs")]
     private int _shootHash;
+    private int _reloadHash;
 
     private void Start()
     {
-        HandGrip = transform.Find("HandGrip").gameObject;
+        Hand = transform.parent.parent.Find("Hand").gameObject;
+        // GOs
+        PrimaryHand = transform.Find("PrimaryHand");
+        SecondaryHand = transform.Find("SecondaryHand");
         ShootPosition = transform.Find("ShootPosition");
         MuzzlePosition = transform.Find("MuzzlePosition");
+        GunRoot = transform.parent.gameObject;
 
-        _hasAnimator = TryGetComponent<Animator>(out _animator);
+        // Components
+        hasAnimator = TryGetComponent<Animator>(out _animator);
         _spriteRenderer = GetComponent<SpriteRenderer>();
-
         audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.clip = shotSound;
+
+        if (bulletType == BulletType.LaserBeam)
+        {
+            laserBeam = Instantiate(Bullet, ShootPosition);
+            laserBeam.transform.SetParent(ShootPosition);
+            laserBeam.GetComponent<LaserBeam>().Damage = BulletDamage;
+            laserBeam.SetActive(false);
+        }
+
+        AssignHands();
         AssignAnimationHashes();
     }
 
     private void AssignAnimationHashes()
     {
         _shootHash = Animator.StringToHash("Shoot");
+        _reloadHash = Animator.StringToHash("Reload");
+    }
+
+    private void AssignHands()
+    {
+        if (Hand != null)
+        {
+            primaryHand = Instantiate(Hand, PrimaryHand.transform);
+            primaryHand.SetActive(true);
+            primaryHand.transform.SetParent(PrimaryHand);
+
+            secondaryHand = Instantiate(Hand, SecondaryHand.transform);
+            secondaryHand.SetActive(true);
+            secondaryHand.transform.SetParent(SecondaryHand);
+        }
     }
 
     private void Update()
     {
-        if (isFiring)
+        HandleRotate();
+        HandleFire();
+        HandleReload();
+    }
+
+    public void HandleInput(bool f, bool r, Vector2 aimPos)
+    {
+        fire = f;
+        reload = r;
+        aimPosition = aimPos;
+    }
+
+    private void HandleFire()
+    {
+        if (nextFireTime > 0)
         {
-            PullTrigger();
+            nextFireTime -= Time.deltaTime;
+        }
+
+        if (isReloading)
+            return;
+
+        if (fire)
+        {
+            // auto reload
+            if (CurrentMagazine <= 0)
+                Reload();
+
+            switch (fireMode)
+            {
+                case FireMode.Semi:
+                    if (holdTime == 0)
+                        Fire();
+                    break;
+
+                case FireMode.Auto:
+                    Fire();
+                    break;
+            }
+
+            if (bulletType == BulletType.LaserBeam)
+            {
+                FireLaserBeam();
+            }
+
             holdTime += Time.deltaTime;
         }
         else
         {
             holdTime = 0f;
+
+            if (bulletType == BulletType.LaserBeam)
+            {
+                StopLaserBeam();
+            }
         }
     }
 
-    public void SetFiring(bool fire)
+    private void HandleRotate()
     {
-        isFiring = fire;
-    }
+        Vector2 aimDir = aimPosition - (Vector2)GunRoot.transform.position;
 
-    private void PullTrigger()
-    {
-        switch (fireMode)
+        float distanceGun2Mouse = aimDir.magnitude;
+        if (distanceGun2Mouse < 0.5)
+            return;
+
+        float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
+        GunRoot.transform.eulerAngles = new Vector3(0, 0, angle);
+
+        if (angle <= 90 && angle >= -90)
+            GunRoot.transform.localScale = new Vector3(1f, 1f, 1f);
+        else
+            GunRoot.transform.localScale = new Vector3(-1f, -1f, 1f);
+
+        if (angle < 0)
         {
-            case FireMode.Semi:
-                if (holdTime == 0)
-                    Fire();
-                break;
-
-            case FireMode.Auto:
-                Fire();
-                break;
+            _spriteRenderer.sortingOrder = baseSpriteOrder + 1;
+            primaryHand.GetComponent<SpriteRenderer>().sortingOrder = baseSpriteOrder + 2;
+            secondaryHand.GetComponent<SpriteRenderer>().sortingOrder = baseSpriteOrder + 2;
+        }
+        else
+        {
+            _spriteRenderer.sortingOrder = baseSpriteOrder - 2;
+            primaryHand.GetComponent<SpriteRenderer>().sortingOrder = baseSpriteOrder - 1;
+            secondaryHand.GetComponent<SpriteRenderer>().sortingOrder = baseSpriteOrder - 1;
         }
     }
 
     private void Fire()
     {
-        if (!canFire || isReloading || CurrentMagazine <= 0)
+        if (nextFireTime > 0)
             return;
 
         switch (bulletType)
@@ -119,10 +218,13 @@ public class GunController : MonoBehaviour
                 break;
         }
 
-        CurrentMagazine--;
-        StartCoroutine(Waiting(60 / FireRate));
+        // screen shake
+        if (allowScreenShake)
+        {
+            GameManager.Instance.MainCamera.GetComponent<CameraController>().Shake(ShootPosition.right.normalized * -1);
+        }
 
-        if (_hasAnimator)
+        if (hasAnimator)
         {
             _animator.SetTrigger(_shootHash);
         }
@@ -130,30 +232,27 @@ public class GunController : MonoBehaviour
 
     private void FireProjectile()
     {
+        nextFireTime = 60 / FireRate;
+        if (!hasInfinityAmmo)
+            CurrentMagazine--;
+
         // recoil/spread
         float spread = Random.Range(-SpreadRate, SpreadRate);
-        Vector2 shootDir = ShootPosition.up + new Vector3(0f, spread);
+        Vector2 shootDir = ShootPosition.right + new Vector3(0f, spread);
 
         GameObject bullet = Instantiate(Bullet, ShootPosition.position, ShootPosition.rotation);
         GameObject muzzle = Instantiate(Muzzle, MuzzlePosition.position, MuzzlePosition.rotation);
 
-        Destroy(muzzle, 0.5f);
+        Destroy(bullet, BulletExistTime);
+        Destroy(muzzle, 0.45f);
 
         bullet.GetComponent<Rigidbody2D>().velocity = shootDir * BulletSpeed;
+        bullet.GetComponent<BulletProjectile>().Damage = BulletDamage;
 
         // sfx
-        if (audioSource != null && audioSource.clip != null)
+        if (audioSource != null && shotSound != null)
         {
-            audioSource.Play();
-        }
-
-        // screen shake
-        if (allowScreenShake)
-        {
-            if (Camera.main.gameObject.TryGetComponent<CameraController>(out var mainCameraController))
-            {
-                mainCameraController.Shake(shootDir.normalized * -1);
-            }
+            audioSource.PlayOneShot(shotSound);
         }
     }
 
@@ -162,42 +261,82 @@ public class GunController : MonoBehaviour
 
     }
 
-    private IEnumerator Waiting(float time)
+    private void FireLaserBeam()
     {
-        canFire = false;
-        yield return new WaitForSeconds(time);
-        canFire = true;
+        CurrentMagazine -= Time.deltaTime;
+        if (laserBeam != null && !laserBeam.activeSelf)
+        {
+            laserBeam.SetActive(true);
+        }
+        if (holdTime > 0 && !audioSource.isPlaying)
+        {
+            if (audioSource != null && shotSound != null)
+            {
+                audioSource.clip = shotSound;
+                audioSource.loop = true;
+                audioSource.Play();
+            }
+        }
+    }
+
+    private void StopLaserBeam()
+    {
+        if (laserBeam != null && laserBeam.activeSelf)
+        {
+            laserBeam.SetActive(false);
+        }
+        if (audioSource != null && reloadSound != null)
+        {
+            audioSource.Stop();
+        }
+    }
+
+    private void HandleReload()
+    {
+        if (reloadTimeLeft > 0)
+        {
+            reloadTimeLeft -= Time.deltaTime;
+        }
+        else
+        {
+            if (isReloading)
+            {
+                isReloading = false;
+                CurrentMagazine = MagazineCapacity;
+
+                if (audioSource != null && reloadSound != null)
+                {
+                    audioSource.Stop();
+                }
+            }
+            else
+            {
+                if (CurrentMagazine == MagazineCapacity)
+                    return;
+
+                if (reload)
+                {
+                    Reload();
+                }
+            }
+        }
     }
 
     public void Reload()
     {
-        if (CurrentMagazine == MagazineCapacity || isReloading)
-            return;
-
-        // start reloading
-        StartCoroutine(Reloading(ReloadTime));
-    }
-
-    private IEnumerator Reloading(float time)
-    {
-        // start reload
+        reloadTimeLeft = ReloadTime;
         isReloading = true;
 
-        yield return new WaitForSeconds(time);
+        if (audioSource != null && reloadSound != null)
+        {
+            audioSource.clip = reloadSound;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
 
-        // finish reloading
-        isReloading = false;
-
-        CurrentMagazine = MagazineCapacity;
-    }
-
-    public bool IsOneHand()
-    {
-        return handMode == Hand.One;
-    }
-
-    public bool IsTwoHands()
-    {
-        return handMode == Hand.Two;
+        if (hasAnimator)
+        {
+            _animator.SetTrigger(_reloadHash);
+        }
     }
 }

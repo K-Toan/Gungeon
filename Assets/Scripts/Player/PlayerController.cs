@@ -1,9 +1,22 @@
+using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerController : Damageable
+public class PlayerController : MonoBehaviour
 {
+    [Header("Stats")]
+    public string Name = "";
+    [Space]
+    public float CurrentHP = 100;
+    public float MaxHP = 100;
+    public bool canHit = true;
+    [Space]
+    public int CurrentLevel = 1;
+    public int MaxLevel = 4;
+    public int CurrentExp = 0;
+    public int MaxExp = 100;
+
+
     [Header("Move")]
     public float MoveSpeed = 3f;
     public float Acceleration = 20f;
@@ -12,37 +25,56 @@ public class PlayerController : Damageable
     [SerializeField] private float currentSpeed;
     [SerializeField] private bool canMove = true;
 
-    [Header("Dash/Dodge")]
+    [Header("Dodge")]
     public float DodgeSpeed = 3f;
     public float DodgeTime = 0.75f;
     public float DodgeCooldownTime = 0.25f;
-    [SerializeField] private Vector2 DodgeDirection;
     [SerializeField] private bool isDodging = false;
     [SerializeField] private bool canDodge = true;
+
+    [Header("Ability")]
+    public Ability PlayerAbility;
+    public float AbilityCooldownTime = 1f;
+
+    [Header("Shield")]
+    public float ShieldTime = 5f;
+
+    [Header("Dash")]
+    public float DashSpeed = 15f;
+    public float DashTime = 0.25f;
+    [SerializeField] private bool isDashing = false;
+    [SerializeField] private bool canDash = true;
+
+    [Header("Sandevistan")]
+    [SerializeField] private bool canSlowDownTime = true;
+    [SerializeField] private bool isSlowedDown = false;
+    public float SlowTime = 5f;
+    public float SlowFactor = 0.5f;
 
     [Header("Rotation")]
     [SerializeField] private Vector2 lookDirection;
     [SerializeField] private Vector2 gunDirection;
 
-    [Header("Game Objects")]
-    [SerializeField] private bool _hasGun;
-    public GameObject Gun;
+    [Header("Guns")]
+    [SerializeField] private bool hasGun;
     public GameObject GunRoot;
     public GameObject Hand;
+    public GameObject Gun;
 
     [Header("Components")]
-    [SerializeField] private bool _hasAnimator;
+    [SerializeField] private bool hasAnimator;
     [SerializeField] private Animator _animator;
+    [SerializeField] private Collider2D _hitboxCollider;
+    [SerializeField] private Collider2D _environmentCollider;
     [SerializeField] private SpriteRenderer _spriteRenderer;
-    [SerializeField] private InputSystem _input;
+    [SerializeField] private PlayerInputSystem _input;
     [SerializeField] private Rigidbody2D _rigidbody;
-    private Camera _mainCamera;
 
     [Header("Scripts")]
     [SerializeField] private GhostEffect _ghostEffect;
     [SerializeField] private FlashEffect _flashEffect;
+    [SerializeField] private GunSystem _gunSystem;
     [SerializeField] private GunController _gunController;
-    [SerializeField] private WeaponSystem _weaponSystem;
 
     [Header("Animation Hash IDs")]
     private int _speedHash;
@@ -50,35 +82,42 @@ public class PlayerController : Damageable
     private int _lookYHash;
     private int _speedXHash;
     private int _speedYHash;
-    private int _DodgeHash;
+    private int _dodgeHash;
     private int _dieHash;
+
+    public enum Ability { Shield, Dash, Sandevistan }
 
     private void Start()
     {
         // game objects
-        _mainCamera = Camera.main;
         Hand = transform.Find("Hand").gameObject;
+        GunRoot = transform.Find("GunRoot").gameObject;
 
         // components
-        _hasAnimator = TryGetComponent<Animator>(out _animator);
+        hasAnimator = TryGetComponent<Animator>(out _animator);
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _ghostEffect = GetComponent<GhostEffect>();
         _flashEffect = GetComponent<FlashEffect>();
-        _weaponSystem = GetComponent<WeaponSystem>();
-        _input = GetComponent<InputSystem>();
+        _gunSystem = GetComponent<GunSystem>();
+        _input = GetComponent<PlayerInputSystem>();
         _rigidbody = GetComponent<Rigidbody2D>();
 
-        AssignGun();
+        AssignGun(_gunSystem.GetFirstGun());
         AssignAnimationHashes();
     }
 
-    private void AssignGun()
+    private void AssignGun(GameObject gun)
     {
-        _hasGun = Gun = GunRoot.transform.GetChild(0).gameObject;
-        if(_hasGun)
+        if (gun != null)
         {
+            Debug.Log("Assigning gun: " + gun.name);
+            hasGun = true;
+            Gun = gun;
             _gunController = Gun.GetComponent<GunController>();
-            Hand.transform.SetParent(_gunController.HandGrip.transform);
+        }
+        else
+        {
+            Debug.LogWarning("Gun is null!");
         }
     }
 
@@ -89,7 +128,7 @@ public class PlayerController : Damageable
         _lookYHash = Animator.StringToHash("LookY");
         _speedXHash = Animator.StringToHash("SpeedX");
         _speedYHash = Animator.StringToHash("SpeedY");
-        _DodgeHash = Animator.StringToHash("Dodge");
+        _dodgeHash = Animator.StringToHash("Dodge");
         _dieHash = Animator.StringToHash("Die");
     }
 
@@ -98,6 +137,7 @@ public class PlayerController : Damageable
         // handle logic parts
         HandleRotation();
         HandleDodge();
+        HandleAbility();
         HandleGun();
         Move();
 
@@ -109,73 +149,93 @@ public class PlayerController : Damageable
     private void HandleRotation()
     {
         // mouse position
-        Vector3 mousePos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         // rotation
         lookDirection = (mousePos - transform.position).normalized;
-        gunDirection = (mousePos - Gun.transform.position).normalized;
-    }
-
-    private void HandleGun()
-    {
-        if (!_hasGun)
-            return;
-
-        // gun rotation
-        GunRoot.transform.up = gunDirection;
-
-        // if(Input.GetKeyDown(KeyCode.Mouse0))
-        _gunController.SetFiring(_input.fire);
-        // if (_input.reload)
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            _gunController.Reload();
-        }
     }
 
     private void HandleDodge()
     {
-        if (!canDodge)
+        if (!canDodge || isDodging || isDashing)
             return;
 
         if (_input.dodge && _input.move != Vector2.zero)
         {
             // recalculate Dodge direction
-            DodgeDirection = _input.move.normalized;
+            Vector2 dodgeDir = _input.move.normalized;
 
             StartCoroutine(DisableMovementRoutine(DodgeTime));
-            StartCoroutine(DodgeRoutine(DodgeDirection));
+            StartCoroutine(DodgeRoutine(dodgeDir));
 
             // animations
-            if (_hasAnimator)
+            if (hasAnimator)
             {
-                _animator.SetTrigger(_DodgeHash);
+                _animator.SetTrigger(_dodgeHash);
             }
+        }
+    }
+
+    private void HandleAbility()
+    {
+        if (isDodging || isDashing)
+            return;
+
+        if (_input.ability)
+        {
+            switch (PlayerAbility)
+            {
+                case Ability.Dash:
+                    if (canDash && _input.move != Vector2.zero)
+                    {
+                        // recalculate Dodge direction
+                        Vector2 dashDir = _input.move.normalized;
+                        StartCoroutine(DashRoutine(dashDir));
+                    }
+                    break;
+
+                case Ability.Shield:
+
+                    break;
+
+                case Ability.Sandevistan:
+                    if (canSlowDownTime)
+                    {
+                        StartCoroutine(SandevistanRoutine(SlowTime, SlowFactor));
+                    }
+                    break;
+            }
+        }
+    }
+
+    private void HandleGun()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            AssignGun(_gunSystem.GetGun(1));
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+            AssignGun(_gunSystem.GetGun(2));
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+            AssignGun(_gunSystem.GetGun(3));
+
+        if (hasGun)
+        {
+            _gunController.HandleInput(_input.fire, _input.reload, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
     }
 
     private void Move()
     {
-        if (!canMove)
+        if (!canMove || isDashing || isDodging)
             return;
 
-        // store the last move direction if player does move
-        if (_input.move.x != 0 || _input.move.y != 0)
-            LastMoveDirection = MoveDirection;
+        _rigidbody.velocity = _input.move.normalized * MoveSpeed;
 
-        MoveDirection = _input.move.normalized;
-
-        // move char by rigidbody
-        // _rigidbody.velocity = Vector2.Lerp(_rigidbody.velocity, MoveDirection * MoveSpeed, Acceleration * Time.deltaTime);
-        _rigidbody.velocity = MoveDirection * MoveSpeed;
-
-        // current magnitude speed
-        currentSpeed = _rigidbody.velocity.magnitude;
+        currentSpeed = _rigidbody.velocity.magnitude * (isSlowedDown ? 2 / SlowFactor : 1);
     }
 
     private void HandleAnimations()
     {
-        if (_hasAnimator)
+        if (hasAnimator)
         {
             _animator.SetFloat(_speedHash, currentSpeed);
             _animator.SetFloat(_lookXHash, lookDirection.x);
@@ -189,16 +249,21 @@ public class PlayerController : Damageable
     {
         // handle player animation facing direction
         // and switch gun to another hand if player is facing left
-        if (lookDirection.x > 0)
+        if (!isDodging)
         {
-            // _spriteRenderer.flipX = false;
-            transform.localScale = new Vector3(1f, 1f, 1f);
+            if (lookDirection.x > 0)
+                transform.localScale = new Vector3(1f, 1f, 1f);
+            else if (lookDirection.x < 0)
+                transform.localScale = new Vector3(-1f, 1f, 1f);
         }
-        else if (lookDirection.x < 0)
+        else
         {
-            // _spriteRenderer.flipX = true;
-            transform.localScale = new Vector3(-1f, 1f, 1f);
+            if (_rigidbody.velocity.x > 0)
+                transform.localScale = new Vector3(1f, 1f, 1f);
+            else if (_rigidbody.velocity.x < 0)
+                transform.localScale = new Vector3(-1f, 1f, 1f);
         }
+
     }
 
     IEnumerator DisableMovementRoutine(float time)
@@ -208,24 +273,137 @@ public class PlayerController : Damageable
         canMove = true;
     }
 
-    IEnumerator DodgeRoutine(Vector2 DodgeDir)
+    IEnumerator DodgeRoutine(Vector2 moveDir)
     {
-        // start ghost effect
-        // _ghostEffect.Play(DodgeTime);
-
         // start Dodge
         canDodge = false;
         isDodging = true;
-        _rigidbody.velocity = DodgeDir.normalized * DodgeSpeed;
+        _hitboxCollider.enabled = false;
+        GunRoot.SetActive(false);
+        _rigidbody.velocity = moveDir.normalized * DodgeSpeed;
 
         yield return new WaitForSeconds(DodgeTime);
 
         // end Dodge
         isDodging = false;
+        GunRoot.SetActive(true);
+        _hitboxCollider.enabled = true;
         _rigidbody.velocity = Vector2.zero;
 
         // Dodge cooldown
         yield return new WaitForSeconds(DodgeCooldownTime);
         canDodge = true;
+    }
+
+    IEnumerator DashRoutine(Vector2 moveDir)
+    {
+        StartCoroutine(DisableMovementRoutine(DashTime));
+
+        // start ghost effect
+        _ghostEffect.enabled = true;
+
+        // start Dodge
+        canDash = false;
+        isDashing = true;
+        _rigidbody.velocity = moveDir.normalized * DashSpeed;
+
+        yield return new WaitForSeconds(DashTime);
+
+        // end ghost effect
+        _ghostEffect.enabled = false;
+
+        // end Dodge
+        isDashing = false;
+        _rigidbody.velocity = Vector2.zero;
+
+        // Dodge cooldown
+        yield return new WaitForSeconds(AbilityCooldownTime);
+        canDash = true;
+    }
+
+    IEnumerator SandevistanRoutine(float time, float factor)
+    {
+        StartCoroutine(GameManager.Instance.SlowDownGameRoutine(time, factor));
+
+        // start ghost effect
+        _ghostEffect.enabled = true;
+        isSlowedDown = true;
+        canSlowDownTime = false;
+
+        yield return new WaitForSecondsRealtime(time);
+
+        // end ghost effect
+        _ghostEffect.enabled = false;
+        isSlowedDown = false;
+
+        // Ability cooldown
+        yield return new WaitForSeconds(AbilityCooldownTime);
+        canSlowDownTime = true;
+    }
+
+    public void TakeDamage(float damage, Vector2 direction)
+    {
+        if (!canHit)
+            return;
+
+        CurrentHP -= damage;
+        if (CurrentHP > 0)
+        {
+            StartCoroutine(TakeDamageRoutine(direction));
+        }
+        else
+        {
+            Die();
+        }
+    }
+
+    private IEnumerator TakeDamageRoutine(Vector2 dir)
+    {
+        _rigidbody.velocity = dir;
+        canHit = false;
+        yield return new WaitForSeconds(1f);
+        _rigidbody.velocity = Vector2.zero;
+        canHit = true;
+    }
+
+    public void Die()
+    {
+        // Destroy(gameObject);
+        _hitboxCollider.enabled = false;
+        canHit = false;
+        canMove = false;
+        canDash = false;
+        canDodge = false;
+        canSlowDownTime = false;
+    }
+
+    public void HandleExpChange(int exp)
+    {
+        CurrentExp += exp;
+        if (CurrentExp > MaxExp)
+        {
+            LevelUp();
+        }
+    }
+
+    public void LevelUp()
+    {
+        MaxHP += 10;
+        CurrentHP += 10;
+
+        CurrentLevel++;
+
+        CurrentExp = 0;
+        MaxExp += 20;
+    }
+
+    private void OnEnable()
+    {
+        ExpManager.Instance.OnExpChange += HandleExpChange;
+    }
+
+    private void OnDisable()
+    {
+        ExpManager.Instance.OnExpChange -= HandleExpChange;
     }
 }
