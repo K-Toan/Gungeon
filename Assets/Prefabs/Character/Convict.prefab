@@ -25,7 +25,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1134426234064232443
 Transform:
   m_ObjectHideFlags: 0
@@ -304,8 +304,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Convict
-  HP: 100
+  CurrentHP: 100
+  MaxHP: 100
   canHit: 1
+  CurrentLevel: 1
+  MaxLevel: 4
+  CurrentExp: 0
+  MaxExp: 100
   MoveSpeed: 4
   Acceleration: 20
   MoveDirection: {x: 0, y: 0}

@@ -6,6 +6,7 @@ public class EnemyController : MonoBehaviour
     [Header("Stats")]
     public float HP = 100f;
     public float Damage = 10f;
+    public int Exp = 10;
     [SerializeField] private bool IsDead = false;
     [SerializeField] private bool hasGun;
     private float attackTime = 1f;
@@ -212,6 +213,7 @@ public class EnemyController : MonoBehaviour
         _collider.enabled = false;
         _animator.SetTrigger(_dieHash);
         Destroy(gameObject, 1f);
+        ExpManager.Instance.AddExp(Exp);
     }
 
     public IEnumerator MoveTowards(Vector2 dir, float time)
