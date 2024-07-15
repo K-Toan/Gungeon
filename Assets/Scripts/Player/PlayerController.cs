@@ -5,17 +5,17 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Stats")]
-    public string Name = "";
     [Space]
-    public float CurrentHP = 100;
+    public string Name = "";
     public float MaxHP = 100;
+    public float CurrentHP;
     public bool canHit = true;
+
     [Space]
     public int CurrentLevel = 1;
     public int MaxLevel = 4;
     public int CurrentExp = 0;
     public int MaxExp = 100;
-
 
     [Header("Move")]
     public float MoveSpeed = 3f;
@@ -85,10 +85,16 @@ public class PlayerController : MonoBehaviour
     private int _dodgeHash;
     private int _dieHash;
 
+    [Header("Health")]
+    public HealthBarController healthBar;
     public enum Ability { Shield, Dash, Sandevistan }
 
     private void Start()
     {
+        //set HP
+        CurrentHP = MaxHP;
+        healthBar.SetMaxHealth((int)MaxHP);
+
         // game objects
         Hand = transform.Find("Hand").gameObject;
         GunRoot = transform.Find("GunRoot").gameObject;
@@ -347,6 +353,7 @@ public class PlayerController : MonoBehaviour
             return;
 
         CurrentHP -= damage;
+        healthBar.SetHealth((int)CurrentHP);
         if (CurrentHP > 0)
         {
             StartCoroutine(TakeDamageRoutine(direction));
@@ -356,7 +363,29 @@ public class PlayerController : MonoBehaviour
             Die();
         }
     }
+    public void Heal(float amount)
+    {
+        CurrentHP = Mathf.Min(CurrentHP + amount, MaxHP);
+        healthBar.SetHealth((int)CurrentHP);
+    }
+    public void HandleExpChange(int exp)
+    {
+        CurrentExp += exp;
+        if (CurrentExp > MaxExp)
+        {
+            LevelUp();
+        }
+    }
+    public void LevelUp()
+    {
+        MaxHP += 10;
+        CurrentHP += 10;
 
+        CurrentLevel++;
+
+        CurrentExp = 0;
+        MaxExp += 20;
+    }
     private IEnumerator TakeDamageRoutine(Vector2 dir)
     {
         _rigidbody.velocity = dir;
@@ -368,42 +397,6 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
-        // Destroy(gameObject);
-        _hitboxCollider.enabled = false;
-        canHit = false;
-        canMove = false;
-        canDash = false;
-        canDodge = false;
-        canSlowDownTime = false;
-    }
-
-    public void HandleExpChange(int exp)
-    {
-        CurrentExp += exp;
-        if (CurrentExp > MaxExp)
-        {
-            LevelUp();
-        }
-    }
-
-    public void LevelUp()
-    {
-        MaxHP += 10;
-        CurrentHP += 10;
-
-        CurrentLevel++;
-
-        CurrentExp = 0;
-        MaxExp += 20;
-    }
-
-    private void OnEnable()
-    {
-        ExpManager.Instance.OnExpChange += HandleExpChange;
-    }
-
-    private void OnDisable()
-    {
-        ExpManager.Instance.OnExpChange -= HandleExpChange;
+        Destroy(gameObject);
     }
 }

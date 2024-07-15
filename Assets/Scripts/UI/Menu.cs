@@ -7,12 +7,14 @@ public class Menu : MonoBehaviour
 {
     public GameObject MainMenu;
     public GameObject OptionMenu;
+    public GameObject PauseMenu;
     public GameObject SelectionMenu;
 
     private void Awake()
     {
         MainMenu.SetActive(true);
         OptionMenu.SetActive(false);
+        PauseMenu.SetActive(false);
         SelectionMenu.SetActive(false);
     }
 
@@ -22,13 +24,6 @@ public class Menu : MonoBehaviour
     }
 
     public void PlayButton_OnClick()
-    {
-        Debug.Log("Play Button Hit");
-        MainMenu.SetActive(false);
-        SelectionMenu.SetActive(true);
-    }
-
-    public void StartButton_OnClick()
     {
         Debug.Log("Play Button Hit");
         MainMenu.SetActive(false);
@@ -63,6 +58,7 @@ public class Menu : MonoBehaviour
         Debug.Log("Exit to menu");
         MainMenu.SetActive(true);
         OptionMenu.SetActive(false);
+        PauseMenu.SetActive(false);
         SelectionMenu.SetActive(false);
     }
 

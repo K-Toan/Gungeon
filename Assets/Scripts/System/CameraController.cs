@@ -24,7 +24,7 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-
+        Target = GameManager.Instance.Player;
     }
 
     private void LateUpdate()
@@ -40,13 +40,6 @@ public class CameraController : MonoBehaviour
                                     -10f);
 
             transform.position = Vector3.Lerp(transform.position, targetPos, Damp * Time.deltaTime);
-        }
-        else
-        {
-            if(GameManager.Instance.Player != null)
-            {
-                Target = GameManager.Instance.Player;
-            }
         }
     }
 
