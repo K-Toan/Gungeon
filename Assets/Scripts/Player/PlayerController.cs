@@ -6,8 +6,16 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Stats")]
     public string Name = "";
-    public float HP = 100;
+    [Space]
+    public float CurrentHP = 100;
+    public float MaxHP = 100;
     public bool canHit = true;
+    [Space]
+    public int CurrentLevel = 1;
+    public int MaxLevel = 4;
+    public int CurrentExp = 0;
+    public int MaxExp = 100;
+
 
     [Header("Move")]
     public float MoveSpeed = 3f;
@@ -338,8 +346,8 @@ public class PlayerController : MonoBehaviour
         if (!canHit)
             return;
 
-        HP -= damage;
-        if (HP > 0)
+        CurrentHP -= damage;
+        if (CurrentHP > 0)
         {
             StartCoroutine(TakeDamageRoutine(direction));
         }
@@ -360,6 +368,42 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
-        Destroy(gameObject);
+        // Destroy(gameObject);
+        _hitboxCollider.enabled = false;
+        canHit = false;
+        canMove = false;
+        canDash = false;
+        canDodge = false;
+        canSlowDownTime = false;
+    }
+
+    public void HandleExpChange(int exp)
+    {
+        CurrentExp += exp;
+        if (CurrentExp > MaxExp)
+        {
+            LevelUp();
+        }
+    }
+
+    public void LevelUp()
+    {
+        MaxHP += 10;
+        CurrentHP += 10;
+
+        CurrentLevel++;
+
+        CurrentExp = 0;
+        MaxExp += 20;
+    }
+
+    private void OnEnable()
+    {
+        ExpManager.Instance.OnExpChange += HandleExpChange;
+    }
+
+    private void OnDisable()
+    {
+        ExpManager.Instance.OnExpChange -= HandleExpChange;
     }
 }
