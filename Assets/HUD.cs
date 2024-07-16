@@ -8,22 +8,29 @@ public class PauseMenuUI : MonoBehaviour
     public GameObject PauseMenu;
     public GameObject MainMenu;
     public GameObject OptionMenu;
+    public AudioSource backgroundMusic; // Thêm biến này
     private bool isPaused = false;
-    private bool escPressed = false; 
+    private bool escPressed = false;
 
     void Awake()
     {
         OptionMenu.SetActive(false);
         PauseMenu.SetActive(false);
         MainMenu.SetActive(false);
+
+        // Đặt ignoreListenerPause cho AudioSource của bạn
+        if (backgroundMusic != null)
+        {
+            backgroundMusic.ignoreListenerPause = true;
+        }
     }
 
     void Update()
     {
-        if (!escPressed && Input.GetKeyDown(KeyCode.Escape)) 
+        if (!escPressed && Input.GetKeyDown(KeyCode.Escape))
         {
-            PauseButton_OnClick(); 
-            escPressed = true; 
+            PauseButton_OnClick();
+            escPressed = true;
         }
     }
 
@@ -32,7 +39,7 @@ public class PauseMenuUI : MonoBehaviour
         PauseMenu.SetActive(false);
         Time.timeScale = 1f;
         isPaused = false;
-        escPressed = false; 
+        escPressed = false;
     }
 
     public void PlayButton_OnClick()
