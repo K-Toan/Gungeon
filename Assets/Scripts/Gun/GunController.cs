@@ -344,7 +344,6 @@ public class GunController : MonoBehaviour
         if (audioSource != null && reloadSound != null)
         {
             audioSource.clip = reloadSound;
-            audioSource.loop = true;
             audioSource.Play();
         }
 
