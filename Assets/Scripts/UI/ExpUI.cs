@@ -1,15 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthBarUI : MonoBehaviour
+public class ExpUI : MonoBehaviour
 {
     public Slider slider;
     public Gradient gradient;
     public Image fill;
-    public Text healthText;
-
+    public Text expText;
+    
     void Start()
     {
         if (slider == null)
@@ -51,11 +49,11 @@ public class HealthBarUI : MonoBehaviour
             }
         }
 
-        // Ensure the healthText is assigned
-        if (healthText == null)
+        // Ensure the expText is assigned
+        if (expText == null)
         {
-            healthText = GetComponentInChildren<Text>();
-            if (healthText == null)
+            expText = GetComponentInChildren<Text>();
+            if (expText == null)
             {
                 Debug.LogError("Text component is not assigned and could not be found in children.");
                 return;
@@ -66,10 +64,10 @@ public class HealthBarUI : MonoBehaviour
         GradientColorKey[] colorKeys = new GradientColorKey[4];
         GradientAlphaKey[] alphaKeys = new GradientAlphaKey[4];
 
-        colorKeys[0] = new GradientColorKey(ColorUtility.TryParseHtmlString("#FF0000", out Color color) ? color : Color.red, 0f);
-        colorKeys[1] = new GradientColorKey(ColorUtility.TryParseHtmlString("#FF8400", out color) ? color : new Color(1f, 0.513f, 0f), 0.33f);
-        colorKeys[2] = new GradientColorKey(ColorUtility.TryParseHtmlString("#7AFF00", out color) ? color : new Color(0.478f, 1f, 0f), 0.66f);
-        colorKeys[3] = new GradientColorKey(ColorUtility.TryParseHtmlString("#18FF00", out color) ? color : new Color(0.094f, 1f, 0f), 1f);
+        colorKeys[0] = new GradientColorKey(ColorUtility.TryParseHtmlString("#478CCF", out Color color) ? color : Color.red, 0f);
+        colorKeys[1] = new GradientColorKey(ColorUtility.TryParseHtmlString("#478CCF", out color) ? color : new Color(1f, 0.513f, 0f), 0.33f);
+        colorKeys[2] = new GradientColorKey(ColorUtility.TryParseHtmlString("#478CCF", out color) ? color : new Color(0.478f, 1f, 0f), 0.66f);
+        colorKeys[3] = new GradientColorKey(ColorUtility.TryParseHtmlString("#478CCF", out color) ? color : new Color(0.094f, 1f, 0f), 1f);
 
         alphaKeys[0] = new GradientAlphaKey(1.0f, 0f);
         alphaKeys[1] = new GradientAlphaKey(1.0f, 0.25f);
@@ -80,35 +78,35 @@ public class HealthBarUI : MonoBehaviour
 
         slider.value = slider.maxValue;
         fill.color = gradient.Evaluate(1f);
-        UpdateHealthText(slider.value, slider.maxValue);
+        UpdateExpText(1, slider.value, slider.maxValue);
     }
 
-    public void SetHealth(int health)
+    public void SetExp(int level, float currentExp, float maxExp)
     {
         if (slider != null && fill != null)
         {
-            slider.value = health;
-            fill.color = gradient.Evaluate(slider.normalizedValue);
-            UpdateHealthText(health, slider.maxValue);
+            slider.maxValue = maxExp;
+            slider.value = currentExp;
+            UpdateExpText(level, currentExp, slider.maxValue);
         }
     }
 
-    public void SetMaxHealth(float currentHeath, float maxHealth)
+    public void SetMaxExp(int level, float currentExp, float maxExp)
     {
         if (slider != null && fill != null)
         {
-            slider.maxValue = maxHealth;
-            slider.value = currentHeath;
-            fill.color = gradient.Evaluate(1f);
-            UpdateHealthText(currentHeath, maxHealth);
+            slider.maxValue = maxExp;
+            slider.value = currentExp;
+            // fill.color = gradient.Evaluate(1f);
+            UpdateExpText(level, currentExp, slider.maxValue);
         }
     }
 
-    private void UpdateHealthText(float currentHealth, float maxHealth)
+    private void UpdateExpText(int level, float currentExp, float maxExp)
     {
-        if (healthText != null)
+        if (expText != null)
         {
-            healthText.text = "HP: " + currentHealth + "/" + maxHealth;
+            expText.text = "Lvl " + level + ": " + currentExp + "/" + maxExp;
         }
     }
 }

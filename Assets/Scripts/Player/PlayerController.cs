@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
@@ -87,15 +88,18 @@ public class PlayerController : MonoBehaviour
 
     [Header("HealthBar UI")]
     public HealthBarUI healthBar;
+    public ExpUI expBar;
     public enum Ability { Shield, Dash, Sandevistan }
 
     private void Start()
     {
 
         // Set HP
-        healthBar = FindObjectOfType<HealthBarUI>();
         CurrentHP = MaxHP;
-        healthBar.SetMaxHealth((int)MaxHP);
+        healthBar = FindObjectOfType<HealthBarUI>();
+        expBar = FindObjectOfType<ExpUI>();
+        healthBar.SetMaxHealth(CurrentHP, MaxHP);
+        expBar.SetMaxExp(Level, CurrentExp, MaxExp);
 
         // game objects
         Hand = transform.Find("Hand").gameObject;
@@ -262,7 +266,7 @@ public class PlayerController : MonoBehaviour
             if (gunSpriteRenderer != null)
             {
                 ImageGun.sprite = gunSpriteRenderer.sprite;
-                ImageGun.rectTransform.sizeDelta = size; // Thay đổi kích thước của ImageGun
+                ImageGun.rectTransform.sizeDelta = size;
             }
             else
             {
@@ -404,13 +408,8 @@ public class PlayerController : MonoBehaviour
         else
         {
             Die();
+            SceneManager.LoadScene("EndGameScene");
         }
-    }
-
-    public void Heal(float amount)
-    {
-        CurrentHP = Mathf.Min(CurrentHP + amount, MaxHP);
-        healthBar.SetHealth((int)CurrentHP);
     }
 
     public void HandleExpChange(int exp)
@@ -420,6 +419,7 @@ public class PlayerController : MonoBehaviour
         {
             LevelUp();
         }
+        expBar.SetExp(Level, CurrentExp, MaxExp);
     }
 
     public void LevelUp()
@@ -431,6 +431,8 @@ public class PlayerController : MonoBehaviour
 
         CurrentExp = 0;
         MaxExp += 20;
+
+        healthBar.SetMaxHealth(CurrentHP, MaxHP);
     }
 
     private IEnumerator TakeDamageRoutine(Vector2 dir)
@@ -455,5 +457,9 @@ public class PlayerController : MonoBehaviour
     private void OnDisable()
     {
         ExpManager.Instance.OnExpChange -= HandleExpChange;
+    }
+    public void OnEnemyKilled()
+    {
+        GameManager.Instance.IncrementKillCount();
     }
 }

@@ -129,7 +129,8 @@ public class GunController : MonoBehaviour
         HandleReload();
         if (ammoText != null)
         {
-            ammoText.text = $"{Mathf.Round(CurrentMagazine)}/{MagazineCapacity}";
+            int roundedNumber = Mathf.RoundToInt(CurrentMagazine);
+            ammoText.text = $"{Mathf.Round(roundedNumber)}/{MagazineCapacity}";
         }
     }
 

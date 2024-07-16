@@ -26,6 +26,13 @@ public class GameManager : MonoBehaviour
     [Header("Scripts")]
     public InputSystem _input;
 
+    [Header("Count")]
+    public int killCount = 0;
+    public float totalPlayTime = 0f;
+
+    [Header("Characters")]
+    public List<GameObject> Characters;
+
     private void Awake()
     {
         if (Instance == null)
@@ -49,6 +56,8 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        totalPlayTime += Time.deltaTime; // Update total playtime each frame
+
         if (_input.menu)
         {
             if (!gameIsPaused)
@@ -60,19 +69,6 @@ public class GameManager : MonoBehaviour
                 ContinueGame();
             }
         }
-        // if (Input.GetKeyDown(KeyCode.F))
-        // {
-        //     if (isSlowedDown)
-        //     {
-        //         ResetTimeScale();
-        //         isSlowedDown = false;
-        //     }
-        //     else
-        //     {
-        //         SlowDownGame(0.5f);
-        //         isSlowedDown = true;
-        //     }
-        // }
     }
 
     private void FindGameObjects()
@@ -83,7 +79,7 @@ public class GameManager : MonoBehaviour
 
     private void FindUIs()
     {
-
+        // Add UI finding logic if needed
     }
 
     private void PauseGame()
@@ -118,4 +114,13 @@ public class GameManager : MonoBehaviour
         Time.fixedDeltaTime = 0.02f;
         isSlowedDown = false;
     }
+
+    public void IncrementKillCount()
+    {
+        killCount++;
+        Debug.Log("Kill Count: " + killCount);
+    }
+
+    public int KillCount => killCount; 
+    public float TotalPlayTime => totalPlayTime; 
 }
