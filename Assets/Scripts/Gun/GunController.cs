@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 public class GunController : MonoBehaviour
@@ -129,7 +128,7 @@ public class GunController : MonoBehaviour
         HandleReload();
         if (ammoText != null)
         {
-            ammoText.text = $"{CurrentMagazine}/{MagazineCapacity}";
+            ammoText.text = $"{Mathf.Round(CurrentMagazine)}/{MagazineCapacity}";
         }
     }
 
@@ -154,7 +153,10 @@ public class GunController : MonoBehaviour
         {
             // auto reload
             if (CurrentMagazine <= 0)
+            {
                 Reload();
+                return;
+            }
 
             switch (fireMode)
             {

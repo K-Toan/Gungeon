@@ -230,6 +230,7 @@ public class PlayerController : MonoBehaviour
     { 2, new Vector2(90, 90) },
     { 3, new Vector2(90, 90) }
     };
+
     private void HandleGun()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -253,6 +254,7 @@ public class PlayerController : MonoBehaviour
             _gunController.HandleInput(_input.fire, _input.reload, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
     }
+    
     private void UpdateImageGun(GameObject gun, Vector2 size)
     {
         if (ImageGun != null && gun != null)
