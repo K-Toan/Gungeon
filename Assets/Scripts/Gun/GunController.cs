@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 public class GunController : MonoBehaviour
@@ -129,7 +130,8 @@ public class GunController : MonoBehaviour
         HandleReload();
         if (ammoText != null)
         {
-            ammoText.text = $"{CurrentMagazine}/{MagazineCapacity}";
+            int roundedNumber = Mathf.RoundToInt(CurrentMagazine);
+            ammoText.text = $"{roundedNumber}/{MagazineCapacity}";
         }
     }
 

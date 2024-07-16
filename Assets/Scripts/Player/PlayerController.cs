@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
@@ -261,7 +262,7 @@ public class PlayerController : MonoBehaviour
             if (gunSpriteRenderer != null)
             {
                 ImageGun.sprite = gunSpriteRenderer.sprite;
-                ImageGun.rectTransform.sizeDelta = size; // Thay đổi kích thước của ImageGun
+                ImageGun.rectTransform.sizeDelta = size;
             }
             else
             {
@@ -403,6 +404,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             Die();
+            SceneManager.LoadScene("EndGameScene");
         }
     }
 
@@ -454,5 +456,9 @@ public class PlayerController : MonoBehaviour
     private void OnDisable()
     {
         ExpManager.Instance.OnExpChange -= HandleExpChange;
+    }
+    public void OnEnemyKilled()
+    {
+        GameManager.Instance.IncrementKillCount();
     }
 }

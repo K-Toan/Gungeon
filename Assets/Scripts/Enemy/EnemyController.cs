@@ -212,6 +212,7 @@ public class EnemyController : MonoBehaviour
         IsDead = true;
         _collider.enabled = false;
         _animator.SetTrigger(_dieHash);
+        GameManager.Instance.IncrementKillCount();
         Destroy(gameObject, 1f);
         ExpManager.Instance.AddExp(Exp);
     }
