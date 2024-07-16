@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6831565352669490999}
   m_Layer: 8
   m_Name: Kalibreath_Bullet
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -194,6 +194,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damage: 0
+  Pierce: 0
+  Bounce: 0
   _hasAnimator: 0
   _animator: {fileID: 0}
   _spriteRenderer: {fileID: 0}

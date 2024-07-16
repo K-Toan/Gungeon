@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 4261998815284527844}
   - component: {fileID: 5922077021275424745}
   - component: {fileID: 3988339457522922806}
-  m_Layer: 8
-  m_Name: Magnum_Bullet
+  m_Layer: 9
+  m_Name: Magnum_Enemy_Bullet
   m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -194,7 +194,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damage: 0
-  Pierce: 0
   Bounce: 0
   _hasAnimator: 0
   _animator: {fileID: 0}

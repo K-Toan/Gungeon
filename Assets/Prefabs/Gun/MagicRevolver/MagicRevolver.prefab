@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6419741759459478216
 Transform:
   m_ObjectHideFlags: 0
@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 263362168722024734}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.0625, y: 0.1875, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -127,19 +127,19 @@ MonoBehaviour:
   CurrentMagazine: 6
   MagazineCapacity: 6
   FireRate: 500
-  SpreadRate: 0.12
+  SpreadRate: 0.18
   ReloadTime: 1
   holdTime: 0
   BulletDamage: 30
-  BulletSpeed: 18
-  BulletExistTime: 2
+  BulletSpeed: 15
+  BulletExistTime: 5
   isReloading: 0
   allowScreenShake: 1
   hasInfinityAmmo: 0
   fireMode: 1
   bulletType: 0
-  Bullet: {fileID: 7301774774104238881, guid: 38ec8f3d33bc09d40805dcbe248ea3f7, type: 3}
-  Muzzle: {fileID: 8443970089443374040, guid: a7bf2e46666a44546859df2c3379faa7, type: 3}
+  Bullet: {fileID: 5399003787233406755, guid: a1f47b7499a276e41abd43a6a69ca647, type: 3}
+  Muzzle: {fileID: 6180242159010564531, guid: f43e0c1ffd60a1d498fa48d0772afb81, type: 3}
   PrimaryHand: {fileID: 0}
   SecondaryHand: {fileID: 0}
   shotSound: {fileID: 8300000, guid: 1adcf0eb41309b341b9718b87407decc, type: 3}
@@ -232,7 +232,7 @@ Transform:
   m_GameObject: {fileID: 2984708312425598635}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.6875, y: 0.1875, z: 0}
+  m_LocalPosition: {x: 0.75, y: 0.1875, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

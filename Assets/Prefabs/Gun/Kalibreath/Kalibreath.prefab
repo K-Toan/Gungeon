@@ -151,7 +151,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6168309459321168189}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.8125, y: 0.125, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -254,7 +254,7 @@ MonoBehaviour:
   SpreadRate: 0.12
   ReloadTime: 1
   holdTime: 0
-  BulletDamage: 10
+  BulletDamage: 12
   BulletSpeed: 14
   BulletExistTime: 2
   isReloading: 0
@@ -262,10 +262,10 @@ MonoBehaviour:
   hasInfinityAmmo: 0
   fireMode: 1
   bulletType: 0
-  Bullet: {fileID: 7301774774104238881, guid: 38ec8f3d33bc09d40805dcbe248ea3f7, type: 3}
-  Muzzle: {fileID: 8443970089443374040, guid: a7bf2e46666a44546859df2c3379faa7, type: 3}
+  Bullet: {fileID: 501033429751741633, guid: 93b74e0a9a23d8b4dbeecfd861ffd630, type: 3}
+  Muzzle: {fileID: 5145704729986787274, guid: a7f6c2f9ee0b69f4bacf63f4c4c7160f, type: 3}
   PrimaryHand: {fileID: 0}
   SecondaryHand: {fileID: 0}
-  shotSound: {fileID: 8300000, guid: a99d3ff5652039a469138f114092f4e0, type: 3}
+  shotSound: {fileID: 8300000, guid: d889e8f3d239da14dbbfdf2a4e6e6ea2, type: 3}
   reloadSound: {fileID: 8300000, guid: 47ada9df9fbc7524e88db5f55992e79f, type: 3}
   ammoText: {fileID: 0}

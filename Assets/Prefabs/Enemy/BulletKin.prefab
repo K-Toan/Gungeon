@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Magnum
-  CurrentMagazine: 5
+  CurrentMagazine: 0
   MagazineCapacity: 5
   FireRate: 300
   SpreadRate: 0.2
@@ -169,7 +169,7 @@ MonoBehaviour:
   hasInfinityAmmo: 0
   fireMode: 0
   bulletType: 0
-  Bullet: {fileID: 7301774774104238881, guid: 38ec8f3d33bc09d40805dcbe248ea3f7, type: 3}
+  Bullet: {fileID: 7301774774104238881, guid: af9b95747f6d96a4cb83aecfde2ed1b8, type: 3}
   Muzzle: {fileID: 8443970089443374040, guid: a7bf2e46666a44546859df2c3379faa7, type: 3}
   PrimaryHand: {fileID: 0}
   SecondaryHand: {fileID: 0}

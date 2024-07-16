@@ -526,16 +526,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 541ac22723d9df7418b237e5e1a2c615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Magnum
+  Name: ElephantGun
   CurrentMagazine: 2
   MagazineCapacity: 2
   FireRate: 300
   SpreadRate: 0.06
   ReloadTime: 1
   holdTime: 0
-  BulletDamage: 150
+  BulletDamage: 18
   BulletSpeed: 15
   BulletExistTime: 2
+  BulletPerShot: 5
   isReloading: 0
   allowScreenShake: 1
   hasInfinityAmmo: 0
@@ -904,7 +905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ded6d84584e42f4ebab151f273479e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 150
+  HP: 1500
   Damage: 20
   Exp: 10
   IsDead: 0
@@ -1178,14 +1179,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4098191931337704517, guid: 27a6b506901227e4aadbf243430ac7f8, type: 3}
-      propertyPath: BulletSpeed
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 4098191931337704517, guid: 27a6b506901227e4aadbf243430ac7f8, type: 3}
-      propertyPath: BulletDamage
-      value: 30
-      objectReference: {fileID: 0}
     - target: {fileID: 9197655225808847768, guid: 27a6b506901227e4aadbf243430ac7f8, type: 3}
       propertyPath: m_Name
       value: BulletProrifle
@@ -1441,7 +1434,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1001 &4578642381425351825
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1453,10 +1446,6 @@ PrefabInstance:
     - target: {fileID: 923142662326461047, guid: 5f75318f205957c418bef465ff236a8d, type: 3}
       propertyPath: m_Name
       value: YellowBlaster
-      objectReference: {fileID: 0}
-    - target: {fileID: 923142662326461047, guid: 5f75318f205957c418bef465ff236a8d, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2859420687592489192, guid: 5f75318f205957c418bef465ff236a8d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1498,14 +1487,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5646822458900647103, guid: 5f75318f205957c418bef465ff236a8d, type: 3}
-      propertyPath: shotSound
-      value: 
-      objectReference: {fileID: 8300000, guid: d3fd4e5e0b3ff6a48bb576326300e46e, type: 3}
-    - target: {fileID: 5646822458900647103, guid: 5f75318f205957c418bef465ff236a8d, type: 3}
-      propertyPath: reloadSound
-      value: 
-      objectReference: {fileID: 8300000, guid: ba282982c2f9cf144ab94cdfb5d265e6, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1752,34 +1733,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MagicRevolver
       objectReference: {fileID: 0}
-    - target: {fileID: 263362168722024734, guid: 659e781992a795140be635ce8cf1a367, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2271741071430881857, guid: 659e781992a795140be635ce8cf1a367, type: 3}
-      propertyPath: Bullet
-      value: 
-      objectReference: {fileID: 5399003787233406755, guid: a1f47b7499a276e41abd43a6a69ca647, type: 3}
-    - target: {fileID: 2271741071430881857, guid: 659e781992a795140be635ce8cf1a367, type: 3}
-      propertyPath: Muzzle
-      value: 
-      objectReference: {fileID: 6180242159010564531, guid: f43e0c1ffd60a1d498fa48d0772afb81, type: 3}
-    - target: {fileID: 2271741071430881857, guid: 659e781992a795140be635ce8cf1a367, type: 3}
-      propertyPath: SpreadRate
-      value: 0.18
-      objectReference: {fileID: 0}
-    - target: {fileID: 2271741071430881857, guid: 659e781992a795140be635ce8cf1a367, type: 3}
-      propertyPath: BulletSpeed
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 2271741071430881857, guid: 659e781992a795140be635ce8cf1a367, type: 3}
-      propertyPath: BulletExistTime
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3000729640583560026, guid: 659e781992a795140be635ce8cf1a367, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.75
-      objectReference: {fileID: 0}
     - target: {fileID: 6419741759459478216, guid: 659e781992a795140be635ce8cf1a367, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.0625
@@ -1857,7 +1810,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.5}
+  m_Offset: {x: 0, y: 1}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -1868,7 +1821,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.7, y: 1}
+  m_Size: {x: 1.4, y: 1.8}
   m_EdgeRadius: 0
 --- !u!4 &6999339936679608358
 Transform:
@@ -1896,10 +1849,6 @@ PrefabInstance:
     - target: {fileID: 3300636919937783901, guid: 6693cc652e96ed342b17a9581971614b, type: 3}
       propertyPath: m_Name
       value: AK47
-      objectReference: {fileID: 0}
-    - target: {fileID: 3300636919937783901, guid: 6693cc652e96ed342b17a9581971614b, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7960205857412484626, guid: 6693cc652e96ed342b17a9581971614b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1954,22 +1903,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1917776976919210430}
     m_Modifications:
-    - target: {fileID: 5459920134416465655, guid: c7dba7b902e361342ac0eb4610d3bead, type: 3}
-      propertyPath: Bullet
-      value: 
-      objectReference: {fileID: 501033429751741633, guid: 93b74e0a9a23d8b4dbeecfd861ffd630, type: 3}
-    - target: {fileID: 5459920134416465655, guid: c7dba7b902e361342ac0eb4610d3bead, type: 3}
-      propertyPath: Muzzle
-      value: 
-      objectReference: {fileID: 5145704729986787274, guid: a7f6c2f9ee0b69f4bacf63f4c4c7160f, type: 3}
-    - target: {fileID: 5459920134416465655, guid: c7dba7b902e361342ac0eb4610d3bead, type: 3}
-      propertyPath: shotSound
-      value: 
-      objectReference: {fileID: 8300000, guid: d889e8f3d239da14dbbfdf2a4e6e6ea2, type: 3}
-    - target: {fileID: 5459920134416465655, guid: c7dba7b902e361342ac0eb4610d3bead, type: 3}
-      propertyPath: BulletDamage
-      value: 12
-      objectReference: {fileID: 0}
     - target: {fileID: 6168309459321168189, guid: c7dba7b902e361342ac0eb4610d3bead, type: 3}
       propertyPath: m_Name
       value: Kalibreath
@@ -2166,5 +2099,5 @@ SceneRoots:
   - {fileID: 389563090}
   - {fileID: 2835647710809789415}
   - {fileID: 3614484100177395029}
-  - {fileID: 3694627769565852256}
   - {fileID: 1018377267}
+  - {fileID: 3694627769565852256}

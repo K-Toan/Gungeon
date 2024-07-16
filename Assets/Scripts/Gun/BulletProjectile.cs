@@ -4,7 +4,7 @@ public class BulletProjectile : MonoBehaviour
 {
     [Header("Stats")]
     public float Damage = 0f;
-    // public bool Pierce = false;
+    public bool Pierce = false;
     public bool Bounce = false;
 
     [Header("Components")]
@@ -41,14 +41,15 @@ public class BulletProjectile : MonoBehaviour
         {
             var enemy = other.transform.gameObject.GetComponent<EnemyController>();
             enemy.TakeDamage(Damage, _rigidbody.velocity.normalized);
-            // if (Pierce)
-            // {
-            //     Physics2D.IgnoreCollision(_hitbox, other.collider);
-            // }
-            // else
-            // {
-            //     Hit();
-            // }
+            if (Pierce)
+            {
+                Physics2D.IgnoreCollision(_hitbox, other.collider);
+            }
+            else
+            {
+                Hit();
+            }
+
             if (Bounce)
             {
                 _rigidbody.velocity = Vector2.Reflect(_rigidbody.velocity, other.contacts[0].normal);
@@ -69,7 +70,7 @@ public class BulletProjectile : MonoBehaviour
         {
             if (Bounce)
             {
-                _rigidbody.velocity = Vector2.Reflect(_rigidbody.velocity, other.contacts[0].normal);
+                _rigidbody.velocity = Vector2.Reflect(_rigidbody.velocity, other.contacts[0].normal) * 1.5f;
             }
             else
             {

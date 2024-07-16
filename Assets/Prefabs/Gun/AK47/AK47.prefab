@@ -80,7 +80,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7960205857412484626
 Transform:
   m_ObjectHideFlags: 0
@@ -206,6 +206,7 @@ MonoBehaviour:
   SecondaryHand: {fileID: 0}
   shotSound: {fileID: 8300000, guid: 0d0bce360393d5f4abf6557233ca77e3, type: 3}
   reloadSound: {fileID: 8300000, guid: 5714052ff251728429e934c99f8be328, type: 3}
+  ammoText: {fileID: 0}
 --- !u!1 &5326681188651515840
 GameObject:
   m_ObjectHideFlags: 0

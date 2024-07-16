@@ -194,6 +194,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damage: 0
+  Pierce: 1
+  Bounce: 0
   _hasAnimator: 0
   _animator: {fileID: 0}
   _spriteRenderer: {fileID: 0}

@@ -19,6 +19,7 @@ public class GunController : MonoBehaviour
     public float BulletDamage = 1f;
     public float BulletSpeed = 5f;
     public float BulletExistTime = 5f;
+    public int BulletPerShot = 1;
 
     [Header("States")]
     private bool fire = false;
@@ -55,7 +56,7 @@ public class GunController : MonoBehaviour
     private AudioSource audioSource;
 
     private int baseSpriteOrder = 0;
-    
+
     //UI
     [Header("Ammo Text")]
     public Text ammoText;
@@ -193,7 +194,7 @@ public class GunController : MonoBehaviour
         Vector2 aimDir = aimPosition - (Vector2)GunRoot.transform.position;
 
         float distanceGun2Mouse = aimDir.magnitude;
-        if (distanceGun2Mouse < 0.5)
+        if (distanceGun2Mouse < 1)
             return;
 
         float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
@@ -252,18 +253,26 @@ public class GunController : MonoBehaviour
         if (!hasInfinityAmmo)
             CurrentMagazine--;
 
-        // recoil/spread
-        float spread = Random.Range(-SpreadRate, SpreadRate);
-        Vector2 shootDir = ShootPosition.right + new Vector3(0f, spread);
+        float angleStep = 8f;
+        float angleStart = -angleStep * (BulletPerShot - 1) / 2;
 
-        GameObject bullet = Instantiate(Bullet, ShootPosition.position, ShootPosition.rotation);
-        GameObject muzzle = Instantiate(Muzzle, MuzzlePosition.position, MuzzlePosition.rotation);
+        for (int i = 0; i < BulletPerShot; i++)
+        {
+            float currentAngle = angleStart + angleStep * i;
+            float spread = Random.Range(-SpreadRate, SpreadRate);
 
-        Destroy(bullet, BulletExistTime);
-        Destroy(muzzle, 0.45f);
+            Vector3 direction = Quaternion.Euler(0, 0, currentAngle) * ShootPosition.right;
+            direction += new Vector3(0f, spread);
 
-        bullet.GetComponent<Rigidbody2D>().velocity = shootDir * BulletSpeed;
-        bullet.GetComponent<BulletProjectile>().Damage = BulletDamage;
+            GameObject bullet = Instantiate(Bullet, ShootPosition.position, ShootPosition.rotation);
+            GameObject muzzle = Instantiate(Muzzle, MuzzlePosition.position, MuzzlePosition.rotation);
+
+            Destroy(bullet, BulletExistTime);
+            Destroy(muzzle, 0.45f);
+
+            bullet.GetComponent<Rigidbody2D>().velocity = direction * BulletSpeed;
+            bullet.GetComponent<BulletProjectile>().Damage = BulletDamage;
+        }
 
         // sfx
         if (audioSource != null && shotSound != null)
@@ -358,6 +367,6 @@ public class GunController : MonoBehaviour
     private void OnEnable()
     {
         isReloading = false;
-        
+
     }
 }
