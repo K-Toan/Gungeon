@@ -310,19 +310,19 @@ MonoBehaviour:
   Level: 1
   CurrentExp: 0
   MaxExp: 100
-  MoveSpeed: 4
+  MoveSpeed: 5
   Acceleration: 20
   MoveDirection: {x: 0, y: 0}
   LastMoveDirection: {x: 0, y: 0}
   currentSpeed: 0
   canMove: 1
-  DodgeSpeed: 4
+  DodgeSpeed: 6
   DodgeTime: 0.75
   DodgeCooldownTime: 0.25
   isDodging: 0
   canDodge: 1
   PlayerAbility: 1
-  AbilityCooldownTime: 1
+  AbilityCooldownTime: 2
   ShieldTime: 5
   DashSpeed: 15
   DashTime: 0.25

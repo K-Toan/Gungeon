@@ -521,24 +521,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Marine
-  MaxHP: 100
-  CurrentHP: 0
+  MaxHP: 120
+  CurrentHP: 120
   canHit: 1
   Level: 1
   CurrentExp: 0
   MaxExp: 100
-  MoveSpeed: 4
+  MoveSpeed: 5
   Acceleration: 20
   MoveDirection: {x: 0, y: 0}
   LastMoveDirection: {x: 0, y: 0}
   currentSpeed: 0
   canMove: 1
-  DodgeSpeed: 4
+  DodgeSpeed: 5.5
   DodgeTime: 0.75
   DodgeCooldownTime: 0.25
   isDodging: 0
   canDodge: 1
-  PlayerAbility: 2
+  PlayerAbility: 0
   AbilityCooldownTime: 1
   ShieldTime: 5
   DashSpeed: 15
