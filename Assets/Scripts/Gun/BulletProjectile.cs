@@ -4,19 +4,21 @@ public class BulletProjectile : MonoBehaviour
 {
     [Header("Stats")]
     public float Damage = 0f;
+    // public bool Pierce = false;
+    public bool Bounce = false;
 
     [Header("Components")]
     [SerializeField] private bool _hasAnimator;
     [SerializeField] private Animator _animator;
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private Rigidbody2D _rigidbody;
-    [SerializeField] private BoxCollider2D _hitbox;
+    [SerializeField] private Collider2D _hitbox;
 
     private int _hitHash;
 
     private void Start()
     {
-        _hitbox = GetComponent<BoxCollider2D>();
+        _hitbox = GetComponent<Collider2D>();
         _rigidbody = GetComponent<Rigidbody2D>();
         _hasAnimator = TryGetComponent<Animator>(out _animator);
 
@@ -39,13 +41,41 @@ public class BulletProjectile : MonoBehaviour
         {
             var enemy = other.transform.gameObject.GetComponent<EnemyController>();
             enemy.TakeDamage(Damage, _rigidbody.velocity.normalized);
+            // if (Pierce)
+            // {
+            //     Physics2D.IgnoreCollision(_hitbox, other.collider);
+            // }
+            // else
+            // {
+            //     Hit();
+            // }
+            if (Bounce)
+            {
+                _rigidbody.velocity = Vector2.Reflect(_rigidbody.velocity, other.contacts[0].normal);
+            }
+            else
+            {
+                Hit();
+            }
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             var player = other.transform.gameObject.GetComponent<PlayerController>();
             player.TakeDamage(Damage, _rigidbody.velocity.normalized);
+            // Enemy
+            Hit();
         }
-        Hit();
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Environment"))
+        {
+            if (Bounce)
+            {
+                _rigidbody.velocity = Vector2.Reflect(_rigidbody.velocity, other.contacts[0].normal);
+            }
+            else
+            {
+                Hit();
+            }
+        }
     }
 
     public void Hit()
@@ -58,7 +88,7 @@ public class BulletProjectile : MonoBehaviour
             Destroy(gameObject, 0.5f);
         }
     }
-    
+
     public void IgnoreCollision(Collider2D collider)
     {
         Physics2D.IgnoreCollision(transform.GetComponent<Collider2D>(), collider);
