@@ -405,11 +405,13 @@ public class PlayerController : MonoBehaviour
             Die();
         }
     }
+
     public void Heal(float amount)
     {
         CurrentHP = Mathf.Min(CurrentHP + amount, MaxHP);
         healthBar.SetHealth((int)CurrentHP);
     }
+
     public void HandleExpChange(int exp)
     {
         CurrentExp += exp;
@@ -418,6 +420,7 @@ public class PlayerController : MonoBehaviour
             LevelUp();
         }
     }
+
     public void LevelUp()
     {
         MaxHP += 10;
@@ -428,6 +431,7 @@ public class PlayerController : MonoBehaviour
         CurrentExp = 0;
         MaxExp += 20;
     }
+
     private IEnumerator TakeDamageRoutine(Vector2 dir)
     {
         _rigidbody.velocity = dir;
@@ -440,5 +444,15 @@ public class PlayerController : MonoBehaviour
     public void Die()
     {
         Destroy(gameObject);
+    }
+
+    private void OnEnable()
+    {
+        ExpManager.Instance.OnExpChange += HandleExpChange;
+    }
+
+    private void OnDisable()
+    {
+        ExpManager.Instance.OnExpChange -= HandleExpChange;
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ExpManager : MonoBehaviour
@@ -19,16 +17,6 @@ public class ExpManager : MonoBehaviour
         {
             Instance = this;
         }
-    }
-
-    private void Start()
-    {
-
-    }
-
-    private void Update()
-    {
-
     }
 
     public void AddExp(int amount)
