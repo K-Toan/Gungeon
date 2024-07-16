@@ -529,21 +529,21 @@ MonoBehaviour:
   Name: ElephantGun
   CurrentMagazine: 2
   MagazineCapacity: 2
-  FireRate: 300
-  SpreadRate: 0.06
+  FireRate: 600
+  SpreadRate: 0
   ReloadTime: 1
   holdTime: 0
   BulletDamage: 18
   BulletSpeed: 15
   BulletExistTime: 2
-  BulletPerShot: 5
+  BulletPerShot: 6
   isReloading: 0
   allowScreenShake: 1
   hasInfinityAmmo: 0
   fireMode: 0
   bulletType: 0
   Bullet: {fileID: 7301774774104238881, guid: 38ec8f3d33bc09d40805dcbe248ea3f7, type: 3}
-  Muzzle: {fileID: 8443970089443374040, guid: a7bf2e46666a44546859df2c3379faa7, type: 3}
+  Muzzle: {fileID: 1592106279238282765, guid: fa6e773b42393f84e9a911a8f66ba7ca, type: 3}
   PrimaryHand: {fileID: 0}
   SecondaryHand: {fileID: 0}
   shotSound: {fileID: 8300000, guid: a99d3ff5652039a469138f114092f4e0, type: 3}
@@ -1661,8 +1661,7 @@ MonoBehaviour:
   MaxHP: 100
   CurrentHP: 0
   canHit: 1
-  CurrentLevel: 1
-  MaxLevel: 4
+  Level: 1
   CurrentExp: 0
   MaxExp: 100
   MoveSpeed: 4

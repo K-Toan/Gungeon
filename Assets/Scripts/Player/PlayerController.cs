@@ -12,8 +12,7 @@ public class PlayerController : MonoBehaviour
     public bool canHit = true;
 
     [Space]
-    public int CurrentLevel = 1;
-    public int MaxLevel = 4;
+    public int Level = 1;
     public int CurrentExp = 0;
     public int MaxExp = 100;
 
@@ -233,17 +232,17 @@ public class PlayerController : MonoBehaviour
 
     private void HandleGun()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Level >= 1 && Input.GetKeyDown(KeyCode.Alpha1))
         {
             AssignGun(_gunSystem.GetGun(1));
             UpdateImageGun(_gunSystem.GetGun(1), gunSizes[1]);
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        else if (Level >= 2 && Input.GetKeyDown(KeyCode.Alpha2))
         {
             AssignGun(_gunSystem.GetGun(2));
             UpdateImageGun(_gunSystem.GetGun(2), gunSizes[2]);
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        else if (Level >= 3 && Input.GetKeyDown(KeyCode.Alpha3))
         {
             AssignGun(_gunSystem.GetGun(3));
             UpdateImageGun(_gunSystem.GetGun(3), gunSizes[3]);
@@ -254,7 +253,7 @@ public class PlayerController : MonoBehaviour
             _gunController.HandleInput(_input.fire, _input.reload, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
     }
-    
+
     private void UpdateImageGun(GameObject gun, Vector2 size)
     {
         if (ImageGun != null && gun != null)
@@ -417,7 +416,7 @@ public class PlayerController : MonoBehaviour
     public void HandleExpChange(int exp)
     {
         CurrentExp += exp;
-        if (CurrentExp > MaxExp)
+        if (CurrentExp >= MaxExp)
         {
             LevelUp();
         }
@@ -428,7 +427,7 @@ public class PlayerController : MonoBehaviour
         MaxHP += 10;
         CurrentHP += 10;
 
-        CurrentLevel++;
+        Level++;
 
         CurrentExp = 0;
         MaxExp += 20;
