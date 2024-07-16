@@ -1,21 +1,21 @@
-using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     [Header("Stats")]
-    public string Name = "";
     [Space]
-    public float CurrentHP = 100;
+    public string Name = "";
     public float MaxHP = 100;
+    public float CurrentHP;
     public bool canHit = true;
+
     [Space]
     public int CurrentLevel = 1;
     public int MaxLevel = 4;
     public int CurrentExp = 0;
     public int MaxExp = 100;
-
 
     [Header("Move")]
     public float MoveSpeed = 3f;
@@ -60,6 +60,7 @@ public class PlayerController : MonoBehaviour
     public GameObject GunRoot;
     public GameObject Hand;
     public GameObject Gun;
+    public Image ImageGun;
 
     [Header("Components")]
     [SerializeField] private bool hasAnimator;
@@ -85,14 +86,26 @@ public class PlayerController : MonoBehaviour
     private int _dodgeHash;
     private int _dieHash;
 
+    [Header("HealthBar UI")]
+    public HealthBarUI healthBar;
     public enum Ability { Shield, Dash, Sandevistan }
 
     private void Start()
     {
+
+        // Set HP
+        healthBar = FindObjectOfType<HealthBarUI>();
+        CurrentHP = MaxHP;
+        healthBar.SetMaxHealth((int)MaxHP);
+
         // game objects
         Hand = transform.Find("Hand").gameObject;
         GunRoot = transform.Find("GunRoot").gameObject;
-
+        ImageGun = GameObject.Find("GunImage").GetComponent<Image>();
+        if (ImageGun == null)
+        {
+            Debug.LogError("ImageGun not found!");
+        }
         // components
         hasAnimator = TryGetComponent<Animator>(out _animator);
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -102,6 +115,9 @@ public class PlayerController : MonoBehaviour
         _input = GetComponent<PlayerInputSystem>();
         _rigidbody = GetComponent<Rigidbody2D>();
 
+        GameObject firstGun = _gunSystem.GetFirstGun();
+        AssignGun(firstGun);
+        UpdateImageGun(firstGun, gunSizes[1]);
         AssignGun(_gunSystem.GetFirstGun());
         AssignAnimationHashes();
     }
@@ -208,20 +224,52 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private Dictionary<int, Vector2> gunSizes = new Dictionary<int, Vector2>
+    {
+    { 1, new Vector2(110, 50) },
+    { 2, new Vector2(90, 90) },
+    { 3, new Vector2(90, 90) }
+    };
     private void HandleGun()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
             AssignGun(_gunSystem.GetGun(1));
+            UpdateImageGun(_gunSystem.GetGun(1), gunSizes[1]);
+        }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
             AssignGun(_gunSystem.GetGun(2));
+            UpdateImageGun(_gunSystem.GetGun(2), gunSizes[2]);
+        }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
             AssignGun(_gunSystem.GetGun(3));
+            UpdateImageGun(_gunSystem.GetGun(3), gunSizes[3]);
+        }
 
         if (hasGun)
         {
             _gunController.HandleInput(_input.fire, _input.reload, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
     }
+    private void UpdateImageGun(GameObject gun, Vector2 size)
+    {
+        if (ImageGun != null && gun != null)
+        {
+            SpriteRenderer gunSpriteRenderer = gun.GetComponent<SpriteRenderer>();
+            if (gunSpriteRenderer != null)
+            {
+                ImageGun.sprite = gunSpriteRenderer.sprite;
+                ImageGun.rectTransform.sizeDelta = size; // Thay đổi kích thước của ImageGun
+            }
+            else
+            {
+                Debug.LogWarning("Gun does not have a SpriteRenderer component!");
+            }
+        }
+    }
+
 
     private void Move()
     {
@@ -347,6 +395,7 @@ public class PlayerController : MonoBehaviour
             return;
 
         CurrentHP -= damage;
+        healthBar.SetHealth((int)CurrentHP);
         if (CurrentHP > 0)
         {
             StartCoroutine(TakeDamageRoutine(direction));
@@ -356,7 +405,29 @@ public class PlayerController : MonoBehaviour
             Die();
         }
     }
+    public void Heal(float amount)
+    {
+        CurrentHP = Mathf.Min(CurrentHP + amount, MaxHP);
+        healthBar.SetHealth((int)CurrentHP);
+    }
+    public void HandleExpChange(int exp)
+    {
+        CurrentExp += exp;
+        if (CurrentExp > MaxExp)
+        {
+            LevelUp();
+        }
+    }
+    public void LevelUp()
+    {
+        MaxHP += 10;
+        CurrentHP += 10;
 
+        CurrentLevel++;
+
+        CurrentExp = 0;
+        MaxExp += 20;
+    }
     private IEnumerator TakeDamageRoutine(Vector2 dir)
     {
         _rigidbody.velocity = dir;
@@ -368,42 +439,6 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
-        // Destroy(gameObject);
-        _hitboxCollider.enabled = false;
-        canHit = false;
-        canMove = false;
-        canDash = false;
-        canDodge = false;
-        canSlowDownTime = false;
-    }
-
-    public void HandleExpChange(int exp)
-    {
-        CurrentExp += exp;
-        if (CurrentExp > MaxExp)
-        {
-            LevelUp();
-        }
-    }
-
-    public void LevelUp()
-    {
-        MaxHP += 10;
-        CurrentHP += 10;
-
-        CurrentLevel++;
-
-        CurrentExp = 0;
-        MaxExp += 20;
-    }
-
-    private void OnEnable()
-    {
-        ExpManager.Instance.OnExpChange += HandleExpChange;
-    }
-
-    private void OnDisable()
-    {
-        ExpManager.Instance.OnExpChange -= HandleExpChange;
+        Destroy(gameObject);
     }
 }
