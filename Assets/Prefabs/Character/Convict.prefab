@@ -204,7 +204,7 @@ CircleCollider2D:
     m_Bits: 8
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -304,11 +304,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Convict
-  CurrentHP: 100
   MaxHP: 100
+  CurrentHP: 100
   canHit: 1
-  CurrentLevel: 1
-  MaxLevel: 4
+  Level: 1
   CurrentExp: 0
   MaxExp: 100
   MoveSpeed: 4
@@ -339,6 +338,7 @@ MonoBehaviour:
   GunRoot: {fileID: 0}
   Hand: {fileID: 0}
   Gun: {fileID: 0}
+  ImageGun: {fileID: 0}
   hasAnimator: 0
   _animator: {fileID: 0}
   _hitboxCollider: {fileID: 8564708974945737798}
@@ -350,6 +350,8 @@ MonoBehaviour:
   _flashEffect: {fileID: 0}
   _gunSystem: {fileID: 0}
   _gunController: {fileID: 0}
+  healthBar: {fileID: 0}
+  expBar: {fileID: 0}
 --- !u!114 &267005106821186368
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -405,7 +405,7 @@ CircleCollider2D:
     m_Bits: 8
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -520,9 +520,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9aaa40d6bbc6e741bca2428d552198d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthPoint: 100
   Name: Marine
-  HP: 100
+  MaxHP: 100
+  CurrentHP: 0
+  canHit: 1
+  Level: 1
+  CurrentExp: 0
+  MaxExp: 100
   MoveSpeed: 4
   Acceleration: 20
   MoveDirection: {x: 0, y: 0}
@@ -551,6 +555,7 @@ MonoBehaviour:
   GunRoot: {fileID: 0}
   Hand: {fileID: 0}
   Gun: {fileID: 0}
+  ImageGun: {fileID: 0}
   hasAnimator: 0
   _animator: {fileID: 0}
   _hitboxCollider: {fileID: 967613958247772281}
@@ -562,6 +567,8 @@ MonoBehaviour:
   _flashEffect: {fileID: 0}
   _gunSystem: {fileID: 0}
   _gunController: {fileID: 0}
+  healthBar: {fileID: 0}
+  expBar: {fileID: 0}
 --- !u!1001 &4578642382291773177
 PrefabInstance:
   m_ObjectHideFlags: 0
