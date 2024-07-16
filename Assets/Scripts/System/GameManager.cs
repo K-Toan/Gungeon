@@ -9,10 +9,6 @@ public class GameManager : MonoBehaviour
     [Header("Game Objects")]
     public GameObject MainCamera;
     public GameObject Player;
-    public GameObject[] Playables;
-
-    [Header("UI")]
-    public Canvas Menu;
 
     [Header("State")]
     public float timeScale = 1f;
@@ -23,63 +19,36 @@ public class GameManager : MonoBehaviour
     [Range(0, 100)]
     public int Volumn = 100;
 
-    [Header("Scripts")]
-    public InputSystem _input;
-
     [Header("Count")]
     public int killCount = 0;
     public float totalPlayTime = 0f;
-
-    [Header("Characters")]
-    public List<GameObject> Characters;
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
-
-        FindGameObjects();
-        FindUIs();
     }
 
     private void Start()
     {
-        _input = GetComponent<InputSystem>();
+        FindGameObjects();
     }
 
     private void Update()
     {
         totalPlayTime += Time.deltaTime; // Update total playtime each frame
-
-        if (_input.menu)
-        {
-            if (!gameIsPaused)
-            {
-                PauseGame();
-            }
-            else
-            {
-                ContinueGame();
-            }
-        }
     }
 
     private void FindGameObjects()
     {
         MainCamera = Camera.main.gameObject;
         Player = GameObject.FindGameObjectWithTag("Player");
-    }
-
-    private void FindUIs()
-    {
-        // Add UI finding logic if needed
     }
 
     private void PauseGame()
@@ -121,6 +90,6 @@ public class GameManager : MonoBehaviour
         Debug.Log("Kill Count: " + killCount);
     }
 
-    public int KillCount => killCount; 
-    public float TotalPlayTime => totalPlayTime; 
+    public int KillCount => killCount;
+    public float TotalPlayTime => totalPlayTime;
 }

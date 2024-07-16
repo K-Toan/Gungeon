@@ -195,6 +195,7 @@ MonoBehaviour:
   BulletDamage: 15
   BulletSpeed: 15
   BulletExistTime: 5
+  BulletPerShot: 1
   isReloading: 0
   allowScreenShake: 1
   hasInfinityAmmo: 0

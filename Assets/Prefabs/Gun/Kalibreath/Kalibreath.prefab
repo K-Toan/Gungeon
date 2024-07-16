@@ -257,6 +257,7 @@ MonoBehaviour:
   BulletDamage: 12
   BulletSpeed: 14
   BulletExistTime: 2
+  BulletPerShot: 1
   isReloading: 0
   allowScreenShake: 1
   hasInfinityAmmo: 0

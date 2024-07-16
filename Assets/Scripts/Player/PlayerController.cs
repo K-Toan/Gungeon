@@ -38,6 +38,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Shield")]
     public float ShieldTime = 5f;
+    public GameObject Shield;
+    [SerializeField] private bool canUseShield = true;
 
     [Header("Dash")]
     public float DashSpeed = 15f;
@@ -93,6 +95,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        ExpManager.Instance.OnExpChange += HandleExpChange;
 
         // Set HP
         CurrentHP = MaxHP;
@@ -214,7 +217,10 @@ public class PlayerController : MonoBehaviour
                     break;
 
                 case Ability.Shield:
-
+                    if (Shield != null && canUseShield)
+                    {
+                        StartCoroutine(ShieldRoutine());
+                    }
                     break;
 
                 case Ability.Sandevistan:
@@ -229,9 +235,9 @@ public class PlayerController : MonoBehaviour
 
     private Dictionary<int, Vector2> gunSizes = new Dictionary<int, Vector2>
     {
-    { 1, new Vector2(110, 50) },
-    { 2, new Vector2(90, 90) },
-    { 3, new Vector2(90, 90) }
+        { 1, new Vector2(110, 50) },
+        { 2, new Vector2(90, 90) },
+        { 3, new Vector2(90, 90) }
     };
 
     private void HandleGun()
@@ -394,6 +400,18 @@ public class PlayerController : MonoBehaviour
         canSlowDownTime = true;
     }
 
+    IEnumerator ShieldRoutine()
+    {
+        Instantiate(Shield, transform.position, transform.rotation);
+
+        canUseShield = false;
+
+        yield return new WaitForSecondsRealtime(AbilityCooldownTime);
+
+        canUseShield = true;
+    }
+
+
     public void TakeDamage(float damage, Vector2 direction)
     {
         if (!canHit)
@@ -414,6 +432,7 @@ public class PlayerController : MonoBehaviour
 
     public void HandleExpChange(int exp)
     {
+        Debug.Log("change exp");
         CurrentExp += exp;
         if (CurrentExp >= MaxExp)
         {
@@ -451,13 +470,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        ExpManager.Instance.OnExpChange += HandleExpChange;
+        // ExpManager.Instance.OnExpChange += HandleExpChange;
     }
 
     private void OnDisable()
     {
         ExpManager.Instance.OnExpChange -= HandleExpChange;
     }
+
     public void OnEnemyKilled()
     {
         GameManager.Instance.IncrementKillCount();

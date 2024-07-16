@@ -30,11 +30,6 @@ public class BulletProjectile : MonoBehaviour
         _hitHash = Animator.StringToHash("Hit");
     }
 
-    private void Update()
-    {
-
-    }
-
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))

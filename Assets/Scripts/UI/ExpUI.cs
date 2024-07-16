@@ -76,7 +76,7 @@ public class ExpUI : MonoBehaviour
 
         gradient.SetKeys(colorKeys, alphaKeys);
 
-        slider.value = slider.maxValue;
+        slider.value = 0;
         fill.color = gradient.Evaluate(1f);
         UpdateExpText(1, slider.value, slider.maxValue);
     }

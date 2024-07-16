@@ -9,7 +9,6 @@ public class PauseMenuUI : MonoBehaviour
     public GameObject MainMenu;
     public GameObject OptionMenu;
     private bool isPaused = false;
-    private bool escPressed = false; 
 
     void Awake()
     {
@@ -20,10 +19,16 @@ public class PauseMenuUI : MonoBehaviour
 
     void Update()
     {
-        if (!escPressed && Input.GetKeyDown(KeyCode.Escape)) 
+        if (Input.GetKeyDown(KeyCode.Escape)) 
         {
-            PauseButton_OnClick(); 
-            escPressed = true; 
+            if(isPaused)
+            {
+                ResumeButton_OnClick();
+            }
+            else
+            {
+                PauseButton_OnClick(); 
+            }
         }
     }
 
@@ -32,7 +37,6 @@ public class PauseMenuUI : MonoBehaviour
         PauseMenu.SetActive(false);
         Time.timeScale = 1f;
         isPaused = false;
-        escPressed = false; 
     }
 
     public void PlayButton_OnClick()

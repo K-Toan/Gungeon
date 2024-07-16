@@ -5,15 +5,20 @@ public class AvatarUI : MonoBehaviour
 {
     public Sprite[] Sprites;
     public float FrameRate = 5;
-    public int CharacterIndex = 1;
+    public int CharacterIndex;
 
     private float timer;
-    private int index = 0;
+    public int index = 0;
+    public int startIndex;
+    public int endIndex;
     private Image image;
 
     private void Start()
     {
         image = GetComponent<Image>();
+        CharacterIndex = PlayerPrefs.GetInt("CharIndex", 1);
+        startIndex = (CharacterIndex - 1) * 4;
+        endIndex = CharacterIndex * 4;
     }
 
     private void Update()
@@ -22,8 +27,8 @@ public class AvatarUI : MonoBehaviour
         if (timer > 1 / FrameRate)
         {
             timer = 0f;
-            image.sprite = Sprites[index + (CharacterIndex - 1) * 4];
-            index = (index + 1 + (CharacterIndex - 1) * 4) % 4;
+            image.sprite = Sprites[index + startIndex];
+            index = (index + 1) % 4;
         }
     }
 }

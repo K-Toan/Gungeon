@@ -21,6 +21,7 @@ public class ExpManager : MonoBehaviour
 
     public void AddExp(int amount)
     {
+        Debug.Log("event called");
         OnExpChange?.Invoke(amount);
     }
 }

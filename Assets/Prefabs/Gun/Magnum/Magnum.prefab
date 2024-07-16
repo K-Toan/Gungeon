@@ -226,6 +226,7 @@ MonoBehaviour:
   BulletDamage: 20
   BulletSpeed: 25
   BulletExistTime: 5
+  BulletPerShot: 1
   isReloading: 0
   allowScreenShake: 1
   hasInfinityAmmo: 0
@@ -233,18 +234,11 @@ MonoBehaviour:
   bulletType: 0
   Bullet: {fileID: 7301774774104238881, guid: 38ec8f3d33bc09d40805dcbe248ea3f7, type: 3}
   Muzzle: {fileID: 8443970089443374040, guid: a7bf2e46666a44546859df2c3379faa7, type: 3}
-  GunRoot: {fileID: 0}
-  Hand: {fileID: 0}
   PrimaryHand: {fileID: 0}
   SecondaryHand: {fileID: 0}
-  ShootPosition: {fileID: 0}
-  MuzzlePosition: {fileID: 0}
-  _hasAnimator: 0
-  _animator: {fileID: 0}
-  _spriteRenderer: {fileID: 0}
   shotSound: {fileID: 8300000, guid: a99d3ff5652039a469138f114092f4e0, type: 3}
   reloadSound: {fileID: 8300000, guid: 47ada9df9fbc7524e88db5f55992e79f, type: 3}
-  audioSource: {fileID: 0}
+  ammoText: {fileID: 0}
 --- !u!1 &7538949000101587734
 GameObject:
   m_ObjectHideFlags: 0
