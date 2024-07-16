@@ -339,4 +339,10 @@ public class GunController : MonoBehaviour
             _animator.SetTrigger(_reloadHash);
         }
     }
+
+    private void OnEnable()
+    {
+        isReloading = false;
+        
+    }
 }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7310001946138371462}
   - component: {fileID: 1154465768165725096}
   - component: {fileID: 1664209466492216065}
+  - component: {fileID: 825953608049742242}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -92,10 +93,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainCamera: {fileID: 0}
   Player: {fileID: 0}
-  Enemies: []
+  Playables: []
   Menu: {fileID: 0}
   timeScale: 1
   gameIsPaused: 0
   isSlowedDown: 0
   Volumn: 100
   _input: {fileID: 0}
+--- !u!114 &825953608049742242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907244601498823123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dafccbd989d049745ab6d3f0f6e2460f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
